@@ -16,7 +16,8 @@
 
 package pudans.caturday.di
 
-import com.skydoves.sandwich.coroutines.CoroutinesResponseCallAdapterFactory
+import com.jakewharton.retrofit2.adapter.kotlin.coroutines.CoroutineCallAdapterFactory
+import com.squareup.moshi.Moshi
 import dagger.Module
 import dagger.Provides
 import dagger.hilt.InstallIn
@@ -43,12 +44,13 @@ object NetworkModule {
 
 	@Provides
 	@Singleton
-	fun provideRetrofit(okHttpClient: OkHttpClient): Retrofit {
+	fun provideRetrofit(okHttpClient: OkHttpClient, moshi: Moshi): Retrofit {
 		return Retrofit.Builder()
-			.client(okHttpClient)
 			.baseUrl("https://api.thecatapi.com/")
-			.addConverterFactory(MoshiConverterFactory.create())
-			.addCallAdapterFactory(CoroutinesResponseCallAdapterFactory())
+			.client(okHttpClient)
+			.addConverterFactory(MoshiConverterFactory.create(moshi))
+			.addCallAdapterFactory(CoroutineCallAdapterFactory())
+
 			.build()
 	}
 

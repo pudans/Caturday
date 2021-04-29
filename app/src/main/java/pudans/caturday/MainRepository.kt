@@ -1,9 +1,6 @@
 package pudans.caturday
 
 import androidx.annotation.WorkerThread
-import com.skydoves.sandwich.onError
-import com.skydoves.sandwich.onException
-import com.skydoves.sandwich.suspendOnSuccess
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.flow
 import kotlinx.coroutines.flow.flowOn
@@ -22,17 +19,13 @@ class MainRepository
 
 	) = flow {
 
-		val response = mClient.getImages()
-		response.suspendOnSuccess {
+		val response = mClient.getImages().await()
 
-			emit(data!!)
+		if (response.isSuccessful) {
+			emit(response.body())
+		} else {
+			error("${response.errorBody()}")
 		}
-			// handles the case when the API request gets an error response.
-			// e.g., internal server error.
-			.onError { }
-			// handles the case when the API request gets an exception response.
-			// e.g., network connection error.
-			.onException { }
 
 	}.onStart { }.onCompletion { }.flowOn(Dispatchers.IO)
 }

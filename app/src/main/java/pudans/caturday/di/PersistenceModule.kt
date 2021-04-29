@@ -19,6 +19,7 @@ object PersistenceModule {
 	fun provideMoshi(): Moshi {
 		return Moshi.Builder()
 			.addLast(KotlinJsonAdapterFactory())
+//			.addLast(CollectionJsonAdapter())
 			.build()
 	}
 //

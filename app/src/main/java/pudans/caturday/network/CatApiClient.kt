@@ -1,7 +1,9 @@
 package pudans.caturday.network
 
-import com.skydoves.sandwich.ApiResponse
+import kotlinx.coroutines.Deferred
+import okhttp3.Call
 import pudans.caturday.model.Image
+import retrofit2.Response
 import javax.inject.Inject
 
 class CatApiClient
@@ -9,7 +11,7 @@ class CatApiClient
 	private val mCatApiService: CatApiService
 ) {
 
-	suspend fun getImages(): ApiResponse<Image> =
+	suspend fun getImages(): Deferred<Response<List<Image>>> =
 		mCatApiService.getImages(
 			limit = PAGING_SIZE
 		)

@@ -1,13 +1,19 @@
 
 package pudans.caturday
 
+import androidx.compose.runtime.collectAsState
 import androidx.lifecycle.LiveData
+import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
+import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.viewModelScope
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.delay
+import kotlinx.coroutines.flow.collect
+import kotlinx.coroutines.flow.launchIn
 import kotlinx.coroutines.launch
+import timber.log.Timber
 import java.util.Date
 import javax.inject.Inject
 
@@ -39,15 +45,28 @@ class LiveDataViewModel
 //	val cachedValue = dataSource.cachedData
 
 	// Called when the user clicks on the "FETCH NEW DATA" button. Updates value in data source.
+
+	private val _name = MutableLiveData("")
+	val imageUrl: LiveData<String> = _name
+
 	fun onRefresh() {
 		// Launch a coroutine that reads from a remote data source and updates cache
 		val data = viewModelScope.launch {
+
 			val info = dataSource.getImages()
 
+			info.collect {
+				Timber.d(it?.toString())
 
+				_name.value = it!!.first().url
+			}
+
+//			Timber.d("result", info)
 		}
 
 		data.start()
+
+
 	}
 
 	// Simulates a long-running computation in a background thread
@@ -69,7 +88,9 @@ class LiveDataViewModel
  */
 //object LiveDataVMFactory : ViewModelProvider.Factory {
 //
-//	private val dataSource = DefaultDataSource(Dispatchers.IO)
+//	private val dataSource = MainRepository(
+//
+//	)
 //
 //	override fun <T : ViewModel?> create(modelClass: Class<T>): T {
 //		@Suppress("UNCHECKED_CAST")
