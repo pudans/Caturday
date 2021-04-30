@@ -1,21 +1,22 @@
 import org.jetbrains.kotlin.config.KotlinCompilerVersion
+import pudans.caturday.buildsrc.Dependencies
 
 plugins {
 	id("com.android.application")
-	kotlin("android")
-	kotlin("android.extensions")
-	kotlin("kapt")
+	id("kotlin-android")
+	id("kotlin-android-extensions")
+	id("kotlin-kapt")
 	id("dagger.hilt.android.plugin")
 }
 
 android {
-	compileSdkVersion(30)
+	compileSdkVersion(Dependencies.AndroidSdk.compile)
 	buildToolsVersion("30.0.3")
 
 	defaultConfig {
 		applicationId = "pudans.caturday"
-		minSdkVersion(29)
-		targetSdkVersion(30)
+		minSdkVersion(Dependencies.AndroidSdk.min)
+		targetSdkVersion(Dependencies.AndroidSdk.target)
 		versionCode = 1
 		versionName = "1.0"
 	}
@@ -23,33 +24,31 @@ android {
 	buildTypes {
 		getByName("release") {
 			isMinifyEnabled = false
-			proguardFiles(getDefaultProguardFile(
-					"proguard-android-optimize.txt"),
-					"proguard-rules.pro")
+			proguardFiles(getDefaultProguardFile("proguard-android-optimize.txt"), "proguard-rules.pro")
 		}
 	}
 	compileOptions {
-		sourceCompatibility(JavaVersion.VERSION_1_8)
-		targetCompatibility(JavaVersion.VERSION_1_8)
+		sourceCompatibility = JavaVersion.VERSION_1_8
+		targetCompatibility = JavaVersion.VERSION_1_8
 	}
 	kotlinOptions {
 		jvmTarget = "1.8"
 		useIR = true
 	}
-//	buildFeatures {
-//		compose(true)
-//	}
-//	composeOptions {
-//		kotlinCompilerExtensionVersion("1.0.0-beta05")
-//		kotlinCompilerVersion("1.4.32")
-//	}
+	buildFeatures {
+		compose = true
+	}
+	composeOptions {
+		kotlinCompilerExtensionVersion = Dependencies.Compose.version
+	}
 }
 
 dependencies {
 
+	implementation("com.google.android.material:material:1.3.0")
+
 	implementation("androidx.core:core-ktx:1.3.2")
 	implementation("androidx.appcompat:appcompat:1.2.0")
-	implementation("com.google.android.material:material:1.3.0")
 
 	implementation("androidx.compose.ui:ui:1.0.0-beta05")
 	implementation("androidx.compose.material:material:1.0.0-beta05")
@@ -57,13 +56,13 @@ dependencies {
 
 	implementation("androidx.activity:activity-compose:1.3.0-alpha07")
 
-	implementation("androidx.lifecycle:lifecycle-livedata-ktx:2.3.1")
-	implementation("androidx.lifecycle:lifecycle-runtime-ktx:2.3.1")
-	implementation("androidx.lifecycle:lifecycle-viewmodel-ktx:2.3.1")
+	implementation(Dependencies.Lifecycle.livedata)
+	implementation(Dependencies.Lifecycle.runtime)
+	implementation(Dependencies.Lifecycle.viewmodel)
 
-	implementation("androidx.room:room-runtime:2.3.0-rc01")
-	implementation("androidx.room:room-ktx:2.3.0-rc01")
-	kapt("androidx.room:room-compiler:2.3.0-rc01")
+	implementation(Dependencies.Room.core)
+	kapt(Dependencies.Room.runtime)
+	kapt(Dependencies.Room.compiler)
 
 	// hilt
 	implementation("com.google.dagger:hilt-android:2.34-beta")
@@ -77,14 +76,14 @@ dependencies {
 	implementation("com.squareup.okhttp3:logging-interceptor:4.9.0")
 
 	// moshi
-	implementation("com.squareup.moshi:moshi-kotlin:1.11.0")
-	kapt("com.squareup.moshi:moshi-kotlin-codegen:1.11.0")
+	implementation(Dependencies.Moshi.core)
+	kapt(Dependencies.Moshi.codegen)
 
 	// coroutines
 	implementation("org.jetbrains.kotlinx:kotlinx-coroutines-android:1.4.3")
 
 	// debugging
-	implementation("com.jakewharton.timber:timber:4.7.1")
+	implementation(Dependencies.Timber.core)
 
 	implementation("io.coil-kt:coil:1.2.1")
 

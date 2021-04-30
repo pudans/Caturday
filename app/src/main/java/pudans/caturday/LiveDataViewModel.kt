@@ -76,19 +76,3 @@ class LiveDataViewModel
 //		const val LOADING_STRING = "Loading..."
 //	}
 }
-
-
-/**
- * Factory for [LiveDataViewModel].
- */
-//object LiveDataVMFactory : ViewModelProvider.Factory {
-//
-//	private val dataSource = MainRepository(
-//
-//	)
-//
-//	override fun <T : ViewModel?> create(modelClass: Class<T>): T {
-//		@Suppress("UNCHECKED_CAST")
-//		return LiveDataViewModel(dataSource) as T
-//	}
-//}

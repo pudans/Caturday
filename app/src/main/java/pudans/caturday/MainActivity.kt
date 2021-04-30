@@ -14,6 +14,8 @@ import com.google.accompanist.coil.CoilImage
 import com.google.accompanist.coil.rememberCoilPainter
 import dagger.hilt.android.AndroidEntryPoint
 import pudans.caturday.ui.theme.CaturdayTheme
+import pudans.caturday.ui.theme.Shapes
+import pudans.caturday.ui.theme.Typography
 
 @AndroidEntryPoint
 class MainActivity : AppCompatActivity() {
@@ -23,37 +25,20 @@ class MainActivity : AppCompatActivity() {
 	override fun onCreate(savedInstanceState: Bundle?) {
 		super.onCreate(savedInstanceState)
 
-
 		model.imageUrl.observeForever { url ->
 			setContent {
-				CaturdayTheme {
-					// A surface container using the 'background' color from the theme
+				MaterialTheme {
 					Surface(color = MaterialTheme.colors.background) {
-						Greeting(url)
+						Image(
+							painter = rememberCoilPainter(url),
+							contentDescription = "",
+						)
 					}
 				}
 			}
 		}
 
 		model.onRefresh()
-	}
-}
-
-@Composable
-fun Greeting(url: String) {
-
-	Image(
-		painter = rememberCoilPainter(url),
-		contentDescription = "",
-	)
-}
-
-
-@Preview(showBackground = true)
-@Composable
-fun DefaultPreview() {
-	CaturdayTheme {
-		Greeting("Android")
 	}
 }
 
