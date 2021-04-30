@@ -1,4 +1,4 @@
-package pudans.caturday
+package pudans.caturday.repository
 
 import androidx.annotation.WorkerThread
 import kotlinx.coroutines.Dispatchers
