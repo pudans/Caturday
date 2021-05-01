@@ -1,0 +1,47 @@
+{
+  "project_info": {
+    "project_number": "664909726145",
+    "project_id": "caturday-a9a65",
+    "storage_bucket": "caturday-a9a65.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:664909726145:android:af5c3d14d954fa20822f40",
+        "android_client_info": {
+          "package_name": "pudans.caturday"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "664909726145-p8bl7mqron8i8nk8habk3r781jg33ujo.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "pudans.caturday",
+            "certificate_hash": "210a3278698cb20bc38c48f86e1d81a2a831a4d8"
+          }
+        },
+        {
+          "client_id": "664909726145-fqt5h52d3tn2oo5utpue0oh8set3uied.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyChSjDAfa4VdFd7jZoqsfRsxO6m1QgQaNo"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "664909726145-fqt5h52d3tn2oo5utpue0oh8set3uied.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

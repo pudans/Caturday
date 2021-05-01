@@ -1,4 +1,3 @@
-import org.jetbrains.kotlin.config.KotlinCompilerVersion
 import pudans.caturday.buildsrc.Dependencies
 
 plugins {
@@ -7,6 +6,7 @@ plugins {
 	id("kotlin-android-extensions")
 	id("kotlin-kapt")
 	id("dagger.hilt.android.plugin")
+	id("com.google.gms.google-services")
 }
 
 android {
@@ -44,6 +44,11 @@ android {
 }
 
 dependencies {
+
+	implementation("com.google.firebase:firebase-bom:27.1.0")
+//	implementation("com.google.firebase:firebase-analytics-ktx")
+	implementation("com.google.firebase:firebase-analytics:18.0.3")
+
 
 	implementation("com.google.android.material:material:1.3.0")
 
