@@ -45,10 +45,15 @@ android {
 
 dependencies {
 
-	implementation("com.google.firebase:firebase-bom:27.1.0")
+//	implementation("com.google.firebase:firebase-bom:27.1.0")
 //	implementation("com.google.firebase:firebase-analytics-ktx")
 	implementation("com.google.firebase:firebase-analytics:18.0.3")
+	implementation("com.google.firebase:firebase-storage-ktx:19.2.2")
+	implementation("com.google.firebase:firebase-database-ktx:19.7.0")
 
+	implementation("com.google.android.exoplayer:exoplayer-core:2.13.3")
+	implementation("com.google.android.exoplayer:exoplayer-dash:2.13.3")
+	implementation("com.google.android.exoplayer:exoplayer-ui:2.13.3")
 
 	implementation("com.google.android.material:material:1.3.0")
 

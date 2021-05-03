@@ -8,6 +8,7 @@ import androidx.lifecycle.viewModelScope
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.collect
 import kotlinx.coroutines.launch
+import pudans.caturday.repository.FeedRepository
 import pudans.caturday.repository.MainRepository
 import timber.log.Timber
 import javax.inject.Inject
@@ -18,7 +19,8 @@ import javax.inject.Inject
 @HiltViewModel
 class LiveDataViewModel
 @Inject constructor(
-	private val dataSource: MainRepository
+	private val dataSource: MainRepository,
+	private val mFeedRepository: FeedRepository
 ) : ViewModel() {
 
 	// Exposed LiveData from a function that returns a LiveData generated with a liveData builder
@@ -61,6 +63,9 @@ class LiveDataViewModel
 
 		data.start()
 
+
+
+		mFeedRepository.getFeed()
 
 	}
 
