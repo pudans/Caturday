@@ -6,6 +6,7 @@ import com.google.firebase.database.FirebaseDatabase
 import com.google.firebase.database.IgnoreExtraProperties
 import com.google.firebase.storage.FirebaseStorage
 import com.google.firebase.storage.StorageMetadata
+import com.google.firebase.storage.StorageReference
 import com.google.firebase.storage.UploadTask
 import pudans.caturday.model.FeedItem
 import javax.inject.Inject
@@ -43,26 +44,24 @@ class UploadFileRepository
 		}.addOnSuccessListener {
 			Log.d("asdfggg", "Upload is success $it")
 
-			insertData(it)
+			insertData(it, listRef)
 		}
 
 		return emptyList()
 	}
 
-	private fun insertData(task: UploadTask.TaskSnapshot) {
+	private fun insertData(task: UploadTask.TaskSnapshot, storageReference: StorageReference) {
 		val reference = mFirebaseDatabase.reference
 
 		val database = reference.database
 
-		val key = reference.child("videos").push()
+		val url = storageReference.downloadUrl
 
-		Log.d("qwerty", "${task.uploadSessionUri}")
-		Log.d("qwerty", "${task.uploadSessionUri?.encodedPath}")
-		Log.d("qwerty", "${task.metadata}")
-		Log.d("qwerty", "${task.metadata?.path}")
+		url.addOnSuccessListener {
+			val key = reference.child("videos").push()
+			reference.child(key.key!!).setValue(Video(task.metadata!!.name!!, it.toString()))
+		}
 
-
-		reference.child(key.key!!).setValue(Video(task.metadata!!.name!!, task.task.result.uploadSessionUri.toString()))
 	}
 
 	@IgnoreExtraProperties

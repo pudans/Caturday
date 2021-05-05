@@ -51,6 +51,8 @@ dependencies {
 	implementation("com.google.firebase:firebase-storage-ktx:19.2.2")
 	implementation("com.google.firebase:firebase-database-ktx:19.7.0")
 
+	implementation("com.google.mlkit:image-labeling:17.0.3")
+
 	implementation("com.google.android.exoplayer:exoplayer-core:2.13.3")
 	implementation("com.google.android.exoplayer:exoplayer-dash:2.13.3")
 	implementation("com.google.android.exoplayer:exoplayer-ui:2.13.3")

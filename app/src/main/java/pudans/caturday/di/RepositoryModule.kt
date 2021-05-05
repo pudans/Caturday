@@ -44,8 +44,9 @@ object RepositoryModule {
 	@ViewModelScoped
 	fun provideFeedRepository(
 		firebaseStorage: FirebaseStorage,
+		firebaseDatabase: FirebaseDatabase
 	): FeedRepository {
-		return FeedRepository(firebaseStorage)
+		return FeedRepository(firebaseStorage, firebaseDatabase)
 	}
 
 	@Provides
