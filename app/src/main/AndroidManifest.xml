@@ -17,22 +17,8 @@
 		android:fullBackupContent="@xml/backup_descriptor"
 		>
 
-<!--		<activity-->
-<!--			android:name=".MainActivity"-->
-<!--			android:exported="true"-->
-<!--			android:label="@string/app_name"-->
-<!--			android:theme="@style/Theme.Caturday.NoActionBar">-->
-
-<!--			<intent-filter>-->
-<!--				<action android:name="android.intent.action.MAIN" />-->
-
-<!--				<category android:name="android.intent.category.LAUNCHER" />-->
-<!--			</intent-filter>-->
-<!--		</activity>-->
-
-
 		<activity
-			android:name=".UploadVideoActivity"
+			android:name=".MainActivity"
 			android:exported="true"
 			android:label="@string/app_name"
 			android:theme="@style/Theme.Caturday.NoActionBar">
@@ -43,6 +29,20 @@
 				<category android:name="android.intent.category.LAUNCHER" />
 			</intent-filter>
 		</activity>
+
+
+<!--		<activity-->
+<!--			android:name=".UploadVideoActivity"-->
+<!--			android:exported="true"-->
+<!--			android:label="@string/app_name"-->
+<!--			android:theme="@style/Theme.Caturday.NoActionBar">-->
+
+<!--			<intent-filter>-->
+<!--				<action android:name="android.intent.action.MAIN" />-->
+
+<!--				<category android:name="android.intent.category.LAUNCHER" />-->
+<!--			</intent-filter>-->
+<!--		</activity>-->
 
 	</application>
 

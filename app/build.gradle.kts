@@ -62,9 +62,10 @@ dependencies {
 	implementation("androidx.core:core-ktx:1.3.2")
 	implementation("androidx.appcompat:appcompat:1.2.0")
 
-	implementation("androidx.compose.ui:ui:1.0.0-beta05")
-	implementation("androidx.compose.material:material:1.0.0-beta05")
-	implementation("androidx.compose.ui:ui-tooling:1.0.0-beta05")
+	implementation("androidx.compose.ui:ui:1.0.0-beta06")
+	implementation("androidx.compose.material:material:1.0.0-beta06")
+	implementation("androidx.compose.ui:ui-tooling:1.0.0-beta06")
+	implementation("androidx.compose.material:material-icons-extended:1.0.0-beta06")
 
 	implementation("androidx.activity:activity-compose:1.3.0-alpha07")
 
@@ -79,7 +80,7 @@ dependencies {
 	// hilt
 	implementation("com.google.dagger:hilt-android:2.34-beta")
 	kapt("com.google.dagger:hilt-compiler:2.34-beta")
-	kapt("androidx.hilt:hilt-compiler:1.0.0-beta01")
+	kapt("androidx.hilt:hilt-compiler:1.0.0")
 
 	// network
 	implementation("com.squareup.retrofit2:retrofit:2.9.0")
@@ -100,4 +101,6 @@ dependencies {
 	implementation("io.coil-kt:coil:1.2.1")
 
 	implementation("com.google.accompanist:accompanist-coil:0.8.1")
+
+	implementation("com.google.accompanist:accompanist-pager:0.9.1")
 }
