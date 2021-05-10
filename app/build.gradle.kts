@@ -50,6 +50,8 @@ dependencies {
 	implementation("com.google.firebase:firebase-analytics:18.0.3")
 	implementation("com.google.firebase:firebase-storage-ktx:19.2.2")
 	implementation("com.google.firebase:firebase-database-ktx:19.7.0")
+	implementation("com.google.firebase:firebase-auth-ktx:20.0.4")
+	implementation("com.google.android.gms:play-services-auth:19.0.0")
 
 	implementation("com.google.mlkit:image-labeling:17.0.3")
 
