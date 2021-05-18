@@ -42,6 +42,8 @@ class LoginActivity : AppCompatActivity() {
 
 	private fun openFeedScreen() {
 		startActivity(Intent(this, MainActivity::class.java))
+//		startActivity(Intent(this, UploadVideoActivity::class.java))
+
 	}
 
 	override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
@@ -54,6 +56,8 @@ class LoginActivity : AppCompatActivity() {
 			} catch (e: Throwable) {
 				printText("Error while login")
 			}
+		} else {
+			super.onActivityResult(requestCode, resultCode, data)
 		}
 	}
 

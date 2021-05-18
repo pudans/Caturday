@@ -47,17 +47,23 @@ dependencies {
 
 //	implementation("com.google.firebase:firebase-bom:27.1.0")
 //	implementation("com.google.firebase:firebase-analytics-ktx")
-	implementation("com.google.firebase:firebase-analytics:18.0.3")
-	implementation("com.google.firebase:firebase-storage-ktx:19.2.2")
-	implementation("com.google.firebase:firebase-database-ktx:19.7.0")
-	implementation("com.google.firebase:firebase-auth-ktx:20.0.4")
+	implementation("com.google.firebase:firebase-analytics:19.0.0")
+	implementation("com.google.firebase:firebase-storage-ktx:20.0.0")
+	implementation("com.google.firebase:firebase-database-ktx:20.0.0")
+	implementation("com.google.firebase:firebase-auth-ktx:21.0.1")
 	implementation("com.google.android.gms:play-services-auth:19.0.0")
+
+//	implementation("com.google.firebase:firebase-ml-vision:24.1.0")
+//	implementation("com.google.firebase:firebase-ml-vision-image-label-model:20.0.2")
+
+	implementation ("com.github.wseemann:FFmpegMediaMetadataRetriever-core:1.0.15")
+	implementation ("com.github.wseemann:FFmpegMediaMetadataRetriever-native:1.0.15")
 
 	implementation("com.google.mlkit:image-labeling:17.0.3")
 
-	implementation("com.google.android.exoplayer:exoplayer-core:2.13.3")
-	implementation("com.google.android.exoplayer:exoplayer-dash:2.13.3")
-	implementation("com.google.android.exoplayer:exoplayer-ui:2.13.3")
+	implementation("com.google.android.exoplayer:exoplayer-core:2.14.0")
+	implementation("com.google.android.exoplayer:exoplayer-dash:2.14.0")
+	implementation("com.google.android.exoplayer:exoplayer-ui:2.14.0")
 
 	implementation("com.google.android.material:material:1.3.0")
 

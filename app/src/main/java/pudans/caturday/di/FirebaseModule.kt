@@ -1,5 +1,7 @@
 package pudans.caturday.di
 
+import com.google.firebase.auth.FirebaseAuth
+import com.google.firebase.auth.ktx.auth
 import com.google.firebase.database.FirebaseDatabase
 import com.google.firebase.database.ktx.database
 import com.google.firebase.ktx.Firebase
@@ -25,5 +27,11 @@ object FirebaseModule {
 	@Singleton
 	fun provideFirebaseDatabase(): FirebaseDatabase {
 		return Firebase.database("https://caturday-a9a65-default-rtdb.europe-west1.firebasedatabase.app/")
+	}
+
+	@Provides
+	@Singleton
+	fun provideFirebaseAuth(): FirebaseAuth {
+		return Firebase.auth
 	}
 }
