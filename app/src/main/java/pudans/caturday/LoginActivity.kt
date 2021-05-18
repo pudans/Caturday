@@ -41,7 +41,7 @@ class LoginActivity : AppCompatActivity() {
 	}
 
 	private fun openFeedScreen() {
-		startActivity(Intent(this, MainActivity::class.java))
+		startActivity(Intent(this, FeedActivity::class.java))
 //		startActivity(Intent(this, UploadVideoActivity::class.java))
 
 	}

@@ -1,24 +1,18 @@
 package pudans.caturday.repository
 
-import android.R.attr
 import android.graphics.Bitmap
 import android.media.MediaMetadataRetriever
 import android.net.Uri
 import android.util.Log
-import com.google.android.gms.tasks.Task
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.database.FirebaseDatabase
-import com.google.firebase.database.IgnoreExtraProperties
 import com.google.firebase.storage.FirebaseStorage
 import com.google.firebase.storage.StorageMetadata
-import com.google.firebase.storage.StorageReference
-import com.google.firebase.storage.UploadTask
-import pudans.caturday.model.FeedItem
 import javax.inject.Inject
 import com.google.firebase.storage.ktx.component1
 import com.google.firebase.storage.ktx.component2
+import pudans.caturday.model.Video
 import java.util.*
-import android.R.attr.bitmap
 import java.io.ByteArrayOutputStream
 
 
@@ -96,20 +90,12 @@ class UploadFileRepository
 			videoUrl = videoUri.toString(),
 			previewName = previewName,
 			previewUrl = previewUri.toString(),
-			uploaderUid = mFirebaseAuth.currentUser!!.uid,
-			uploaderEmail = mFirebaseAuth.currentUser!!.email!!,
-			uploadTimestamp = System.currentTimeMillis()
+			uploaderUid = mFirebaseAuth.currentUser?.uid ?: "",
+			uploaderEmail = mFirebaseAuth.currentUser?.email ?: "",
+			uploaderAvatarUrl = mFirebaseAuth.currentUser?.photoUrl?.toString() ?: "",
+			uploadTimestamp = System.currentTimeMillis(),
+			likedEmails = emptyArray()
 		)
 		reference.child(key.key!!).setValue(newRecord)
 	}
-
-	data class Video(
-		val videoName: String,
-		val videoUrl: String,
-		val previewName: String,
-		val previewUrl: String,
-		val uploaderUid: String,
-		val uploaderEmail: String,
-		val uploadTimestamp: Long
-	)
 }
