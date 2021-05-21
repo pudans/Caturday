@@ -3,25 +3,23 @@ package pudans.caturday.buildsrc
 object Dependencies {
 
 	object AndroidSdk {
-		const val min = 29
-		const val compile = 30
-		const val target = compile
+		const val minSdk = 29
+		const val compileSdk = 30
+		const val buildToolsVersion = "30.0.3"
+		const val targetSdk = compileSdk
 	}
 
 	object Compose {
-
-		const val version = "1.0.0-beta05"
+		const val version = "1.0.0-beta07"
+		const val ui = "androidx.compose.ui:ui:$version"
+		const val ui_tooling = "androidx.compose.ui:ui-tooling:$version"
+		const val material = "androidx.compose.material:material:$version"
+		const val material_icons = "androidx.compose.material:material-icons-extended:$version"
 	}
 
 	object Timber {
 		private const val version = "4.7.1"
 		const val core = "com.jakewharton.timber:timber:$version"
-	}
-
-	object Moshi {
-		private const val version = "1.11.0"
-		const val core = "com.squareup.moshi:moshi-kotlin:$version"
-		const val codegen = "com.squareup.moshi:moshi-kotlin-codegen:$version"
 	}
 
 	object Lifecycle {
@@ -37,5 +35,17 @@ object Dependencies {
 		const val runtime = "androidx.room:room-runtime:$version"
 		const val compiler = "androidx.room:room-compiler:$version"
 
+	}
+	
+	object Firebase {
+		const val analytics = "com.google.firebase:firebase-analytics-ktx:19.0.0"
+		const val storage = "com.google.firebase:firebase-storage-ktx:20.0.0"
+		const val database = "com.google.firebase:firebase-database-ktx:20.0.0"
+		const val auth = "com.google.firebase:firebase-auth-ktx:21.0.1"
+	}
+
+	object ExoPlayer {
+		private const val version = "2.14.0"
+		const val core = "com.google.android.exoplayer:exoplayer-core:$version"
 	}
 }

@@ -8,30 +8,24 @@ import dagger.Provides
 import dagger.hilt.InstallIn
 import dagger.hilt.android.components.ViewModelComponent
 import dagger.hilt.android.scopes.ViewModelScoped
-import pudans.caturday.repository.MainRepository
-import pudans.caturday.network.CatApiClient
+import kotlinx.coroutines.ExperimentalCoroutinesApi
+import kotlinx.coroutines.FlowPreview
 import pudans.caturday.repository.FeedRepository
+import pudans.caturday.repository.ProfileLikedRepository
+import pudans.caturday.repository.ProfileUploadedRepository
 import pudans.caturday.repository.UploadFileRepository
 
 @Module
+@FlowPreview
 @InstallIn(ViewModelComponent::class)
 object RepositoryModule {
 
 	@Provides
 	@ViewModelScoped
-	fun provideMainRepository(
-		client: CatApiClient,
-	): MainRepository {
-		return MainRepository(client)
-	}
-
-	@Provides
-	@ViewModelScoped
+	@ExperimentalCoroutinesApi
 	fun provideFeedRepository(
 		firebaseDatabase: FirebaseDatabase
-	): FeedRepository {
-		return FeedRepository(firebaseDatabase)
-	}
+	): FeedRepository = FeedRepository(firebaseDatabase)
 
 	@Provides
 	@ViewModelScoped
@@ -39,7 +33,21 @@ object RepositoryModule {
 		firebaseStorage: FirebaseStorage,
 		firebaseDatabase: FirebaseDatabase,
 		firebaseAuth: FirebaseAuth
-	): UploadFileRepository {
-		return UploadFileRepository(firebaseStorage, firebaseDatabase, firebaseAuth)
-	}
+	): UploadFileRepository = UploadFileRepository(firebaseStorage, firebaseDatabase, firebaseAuth)
+
+	@Provides
+	@ViewModelScoped
+	@ExperimentalCoroutinesApi
+	fun provideProfileLikedRepository(
+		firebaseDatabase: FirebaseDatabase,
+		firebaseAuth: FirebaseAuth
+	): ProfileLikedRepository = ProfileLikedRepository(firebaseDatabase, firebaseAuth)
+
+	@Provides
+	@ViewModelScoped
+	@ExperimentalCoroutinesApi
+	fun provideProfileUploadedRepository(
+		firebaseDatabase: FirebaseDatabase,
+		firebaseAuth: FirebaseAuth
+	): ProfileUploadedRepository = ProfileUploadedRepository(firebaseDatabase, firebaseAuth)
 }

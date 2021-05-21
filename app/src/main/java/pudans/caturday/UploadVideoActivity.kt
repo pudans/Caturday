@@ -24,7 +24,9 @@ class UploadVideoActivity : AppCompatActivity() {
 		super.onCreate(savedInstanceState)
 
 		setContent {
-			UploadVideoScreen(model)
+			UploadVideoScreen {
+				finish()
+			}
 		}
 
 		model.getFileSelectorState().observeForever {

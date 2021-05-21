@@ -9,5 +9,5 @@ data class Video(
 	val uploaderEmail: String = "",
 	val uploaderAvatarUrl: String = "",
 	val uploadTimestamp: Long = 0L,
-	val likedEmails: Array<String> = emptyArray()
+	val likedEmails: List<String> = emptyList()
 )

@@ -94,7 +94,7 @@ class UploadFileRepository
 			uploaderEmail = mFirebaseAuth.currentUser?.email ?: "",
 			uploaderAvatarUrl = mFirebaseAuth.currentUser?.photoUrl?.toString() ?: "",
 			uploadTimestamp = System.currentTimeMillis(),
-			likedEmails = emptyArray()
+			likedEmails = emptyList()
 		)
 		reference.child(key.key!!).setValue(newRecord)
 	}

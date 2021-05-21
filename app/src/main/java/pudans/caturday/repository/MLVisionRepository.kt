@@ -38,7 +38,7 @@ class MLVisionRepository
 		if (task.isSuccessful) {
 
 			val states = task.result
-				.subList(0, min(16, task.result.size))
+				.subList(0, min(14, task.result.size))
 				.map { CheckerItemState(it.text, String.format("%.1f%%", it.confidence * 100), 0) }
 
 			emit(states)

@@ -1,5 +1,6 @@
 package pudans.caturday.repository
 
+import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.database.FirebaseDatabase
 import pudans.caturday.model.Video
 import javax.inject.Inject
@@ -13,19 +14,23 @@ import kotlinx.coroutines.flow.asFlow
 
 @FlowPreview
 @ExperimentalCoroutinesApi
-class FeedRepository
+class ProfileLikedRepository
 @Inject constructor(
-	firebaseDatabase: FirebaseDatabase
+	firebaseDatabase: FirebaseDatabase,
+	firebaseAuth: FirebaseAuth
 ) {
 
 	private val mChannelFlow = ConflatedBroadcastChannel<List<Video>>()
 
 	init {
 		firebaseDatabase.reference.get().addOnSuccessListener { dataSnapshot ->
-			val result = dataSnapshot.children.mapNotNull { it.getValue<Video>() }.reversed()
+			val result = dataSnapshot
+				.children
+				.mapNotNull { it.getValue<Video>() }
+				.filter { it.likedEmails.contains(firebaseAuth.currentUser?.email) }
 			mChannelFlow.sendBlocking(result)
 		}
 	}
 
-	fun getFeed(): Flow<List<Video>> = mChannelFlow.asFlow()
+	fun getLikedVideos(): Flow<List<Video>> = mChannelFlow.asFlow()
 }

@@ -19,19 +19,16 @@ object FirebaseModule {
 
 	@Provides
 	@Singleton
-	fun provideFirebaseStorage(): FirebaseStorage {
-		return Firebase.storage("gs://caturday-a9a65.appspot.com/")
-	}
+	fun provideFirebaseStorage(): FirebaseStorage =
+		Firebase.storage("gs://caturday-a9a65.appspot.com/")
 
 	@Provides
 	@Singleton
-	fun provideFirebaseDatabase(): FirebaseDatabase {
-		return Firebase.database("https://caturday-a9a65-default-rtdb.europe-west1.firebasedatabase.app/")
-	}
+	fun provideFirebaseDatabase(): FirebaseDatabase =
+		Firebase.database("https://caturday-a9a65-default-rtdb.europe-west1.firebasedatabase.app/")
 
 	@Provides
 	@Singleton
-	fun provideFirebaseAuth(): FirebaseAuth {
-		return Firebase.auth
-	}
+	fun provideFirebaseAuth(): FirebaseAuth =
+		Firebase.auth
 }

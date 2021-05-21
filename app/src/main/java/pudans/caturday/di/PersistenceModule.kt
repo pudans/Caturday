@@ -1,27 +1,23 @@
 package pudans.caturday.di
 
-import android.app.Application
-import androidx.room.Room
-import com.squareup.moshi.Moshi
-import com.squareup.moshi.kotlin.reflect.KotlinJsonAdapterFactory
 import dagger.Module
 import dagger.Provides
 import dagger.hilt.InstallIn
 import dagger.hilt.components.SingletonComponent
 import javax.inject.Singleton
 
-@Module
-@InstallIn(SingletonComponent::class)
+//@Module
+//@InstallIn(SingletonComponent::class)
 object PersistenceModule {
 
-	@Provides
-	@Singleton
-	fun provideMoshi(): Moshi {
-		return Moshi.Builder()
-			.addLast(KotlinJsonAdapterFactory())
-//			.addLast(CollectionJsonAdapter())
-			.build()
-	}
+//	@Provides
+//	@Singleton
+//	fun provideMoshi(): Moshi {
+//		return Moshi.Builder()
+//			.addLast(KotlinJsonAdapterFactory())
+////			.addLast(CollectionJsonAdapter())
+//			.build()
+//	}
 //
 //	@Provides
 //	@Singleton

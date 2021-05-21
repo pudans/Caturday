@@ -1,3 +1,7 @@
 <resources>
 	<string name="app_name">Caturday</string>
+	<string name="profile">Profile</string>
+	<string name="feed">Feed</string>
+	<string name="upload">Upload</string>
+
 </resources>

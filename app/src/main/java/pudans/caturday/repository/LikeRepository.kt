@@ -13,7 +13,7 @@ import kotlinx.coroutines.flow.asFlow
 
 @FlowPreview
 @ExperimentalCoroutinesApi
-class FeedRepository
+class LikeRepository
 @Inject constructor(
 	firebaseDatabase: FirebaseDatabase
 ) {
