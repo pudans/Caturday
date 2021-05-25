@@ -9,14 +9,20 @@ import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import dagger.hilt.android.lifecycle.HiltViewModel
+import kotlinx.coroutines.ExperimentalCoroutinesApi
+import kotlinx.coroutines.FlowPreview
 import kotlinx.coroutines.flow.collect
 import kotlinx.coroutines.launch
 import pudans.caturday.repository.MLVisionRepository
 import pudans.caturday.repository.UploadFileRepository
 import pudans.caturday.state.CheckerItemState
+import pudans.caturday.state.UploadVideoState
 import javax.inject.Inject
+import kotlin.math.min
 
 
+@ExperimentalCoroutinesApi
+@FlowPreview
 @HiltViewModel
 class UploadVideoViewModel
 @Inject constructor(
@@ -24,49 +30,53 @@ class UploadVideoViewModel
 	private val mCatCheckerRepository: MLVisionRepository
 ) : ViewModel() {
 
-
 	private val mFileSelectorState = MutableLiveData<Boolean>()
-	private val mVideoIsMuted = mutableStateOf(false)
 	private val mCheckerItemsState = mutableStateOf(emptyList<CheckerItemState>())
 	private val mSourceState = mutableStateOf<Uri?>(null)
 	private val mUploadButtonState = mutableStateOf(false)
+	private val mUploadState = mutableStateOf<UploadVideoState>(UploadVideoState.Default)
 
 	fun getVideoSourceState(): State<Uri?> = mSourceState
 
 	fun getFileSelectorState(): LiveData<Boolean> = mFileSelectorState
 
-	fun getVideMutedState(): State<Boolean> = mVideoIsMuted
-
 	fun getCheckerItemsState(): State<List<CheckerItemState>> = mCheckerItemsState
 
 	fun getUploadButtonState(): State<Boolean> = mUploadButtonState
 
+	fun getUploadState(): State<UploadVideoState> = mUploadState
+
 	fun setVideoSource(uri: Uri?) {
-		mVideoIsMuted.value = true
 		mFileSelectorState.value = false
 		mSourceState.value = uri
-	}
-
-	fun onSelectSourceClick() {
-		mFileSelectorState.value = true
-		mUploadButtonState.value = false
+		mCatCheckerRepository.setUri(uri!!)
 	}
 
 	fun onUploadVideoClick() {
-		mUploadFileRepository.doWork(mSourceState.value!!)
+		viewModelScope.launch {
+			mUploadFileRepository.doWork(mSourceState.value!!).collect {
+				mUploadState.value = it
+			}
+		}
 	}
 
-	fun onChangeMuteState() {
-		mVideoIsMuted.value = mVideoIsMuted.value.not()
-	}
-
-	fun onFrameBitmapChanged(bitmap: Bitmap?) {
-
+	fun onFrameBitmapChanged(bitmap: Long?) {
 		bitmap?.let {
 			viewModelScope.launch {
-				mCatCheckerRepository.work(bitmap).collect { states ->
+				mCatCheckerRepository.work(bitmap).collect { labels ->
+
+					val states = labels
+						.subList(0, min(10, labels.size))
+						.map {
+							CheckerItemState(
+								name = it.text,
+								value = String.format("%.1f%%", it.confidence * 100),
+								isAccent = it.text == "Cat"
+							)
+						}
+
 					mCheckerItemsState.value = states
-					mUploadButtonState.value = states.any { it.labelName == "Cat" }
+					mUploadButtonState.value = mUploadButtonState.value || states.any { it.name == "Cat" }
 				}
 			}
 		}

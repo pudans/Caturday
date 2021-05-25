@@ -1,7 +1,7 @@
 package pudans.caturday.state
 
 data class CheckerItemState(
-	val labelName: String,
-	val labelValue: String,
-	val color: Int
+	val name: String,
+	val value: String,
+	val isAccent: Boolean
 )

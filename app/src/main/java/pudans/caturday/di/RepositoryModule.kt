@@ -15,6 +15,7 @@ import pudans.caturday.repository.ProfileLikedRepository
 import pudans.caturday.repository.ProfileUploadedRepository
 import pudans.caturday.repository.UploadFileRepository
 
+@ExperimentalCoroutinesApi
 @Module
 @FlowPreview
 @InstallIn(ViewModelComponent::class)

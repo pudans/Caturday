@@ -11,11 +11,23 @@ import com.google.firebase.storage.StorageMetadata
 import javax.inject.Inject
 import com.google.firebase.storage.ktx.component1
 import com.google.firebase.storage.ktx.component2
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.ExperimentalCoroutinesApi
+import kotlinx.coroutines.FlowPreview
+import kotlinx.coroutines.channels.ConflatedBroadcastChannel
+import kotlinx.coroutines.channels.sendBlocking
+import kotlinx.coroutines.flow.Flow
+import kotlinx.coroutines.flow.asFlow
+import kotlinx.coroutines.flow.flowOn
+import pudans.caturday.model.PreviewImage
+import pudans.caturday.model.User
 import pudans.caturday.model.Video
+import pudans.caturday.state.UploadVideoState
 import java.util.*
 import java.io.ByteArrayOutputStream
 
-
+@FlowPreview
+@ExperimentalCoroutinesApi
 class UploadFileRepository
 @Inject constructor(
 	private val mFirebaseStorage: FirebaseStorage,
@@ -24,20 +36,25 @@ class UploadFileRepository
 ) {
 
 	private val retriever = MediaMetadataRetriever()
+	private val mChannelFlow = ConflatedBroadcastChannel<UploadVideoState>()
 
-	fun doWork(uri: Uri) {
+	fun doWork(uri: Uri): Flow<UploadVideoState> {
+
+		mChannelFlow.sendBlocking(UploadVideoState.Started)
 
 		retriever.setDataSource(mFirebaseDatabase.app.applicationContext, uri)
 		val firstFrame = retriever.getFrameAtIndex(0)
 
-		upload(uri, firstFrame!!)
+		uploadFile(uri, firstFrame)
+
+		return mChannelFlow.asFlow().flowOn(Dispatchers.IO)
 	}
 
-	private fun upload(file: Uri, firstFrame: Bitmap) {
+	private fun uploadFile(file: Uri, firstFrame: Bitmap?) {
 
-		val name = UUID.randomUUID().toString() + ".mp4"
+		val videoId = UUID.randomUUID().toString()
 
-		val listRef = mFirebaseStorage.reference.child("videos").child(name)
+		val listRef = mFirebaseStorage.reference.child("videos").child(videoId)
 
 		val metadata = StorageMetadata.Builder()
 			.setContentType("videos/mp4")
@@ -46,56 +63,62 @@ class UploadFileRepository
 		val uploadTask = listRef.putFile(file, metadata)
 
 		uploadTask.addOnProgressListener { (bytesTransferred, totalByteCount) ->
-			val progress = (100.0 * bytesTransferred) / totalByteCount
-			Log.d("asdfggg", "Upload is $progress% done")
-		}.addOnPausedListener {
-			Log.d("asdfggg", "Upload is paused")
+			val progress = bytesTransferred.toFloat() / totalByteCount
+			mChannelFlow.sendBlocking(UploadVideoState.Loading(progress))
 		}.addOnFailureListener {
 			Log.d("asdfggg", "Upload is failed")
 		}.addOnSuccessListener {
-			Log.d("asdfggg", "Upload is success $it")
-
 			listRef.downloadUrl.addOnSuccessListener {
-				uploadPreview(name, it, firstFrame)
+				uploadPreview(videoId, it, firstFrame)
 			}
 		}
 	}
 
 
-	private fun uploadPreview(videoName: String, videoUri: Uri, firstFrame: Bitmap) {
-		val baos = ByteArrayOutputStream()
-		firstFrame.compress(Bitmap.CompressFormat.JPEG, 100, baos)
-		val data: ByteArray = baos.toByteArray()
+	private fun uploadPreview(videoId: String, videoUri: Uri, firstFrame: Bitmap?) {
+		if (firstFrame != null) {
+			val baos = ByteArrayOutputStream()
+			firstFrame.compress(Bitmap.CompressFormat.JPEG, 100, baos)
+			val data: ByteArray = baos.toByteArray()
 
-		val name = UUID.randomUUID().toString() + ".jpg"
-		val listRef = mFirebaseStorage.reference.child("previews").child(name)
-		val uploadTask = listRef.putBytes(data)
-		uploadTask.addOnSuccessListener { taskSnapshot ->
-			listRef.downloadUrl.addOnSuccessListener { previewUri ->
-
-				insertData(videoName, videoUri, name, previewUri)
+			val previewId = UUID.randomUUID().toString()
+			val listRef = mFirebaseStorage.reference.child("previews").child(previewId)
+			val uploadTask = listRef.putBytes(data)
+			uploadTask.addOnSuccessListener { taskSnapshot ->
+				listRef.downloadUrl.addOnSuccessListener { previewUri ->
+					insertData(videoId, videoUri, previewId, previewUri)
+				}
 			}
+		} else {
+			insertData(videoId, videoUri, null, null)
 		}
+
 	}
 
 	private fun insertData(
-		videoName: String, videoUri: Uri,
-		previewName: String, previewUri: Uri
+		videoId: String, videoUri: Uri,
+		previewId: String?, previewUri: Uri?
 	) {
 		val reference = mFirebaseDatabase.reference
 
-		val key = reference.child("videos").push()
 		val newRecord = Video(
-			videoName = videoName,
-			videoUrl = videoUri.toString(),
-			previewName = previewName,
-			previewUrl = previewUri.toString(),
-			uploaderUid = mFirebaseAuth.currentUser?.uid ?: "",
-			uploaderEmail = mFirebaseAuth.currentUser?.email ?: "",
-			uploaderAvatarUrl = mFirebaseAuth.currentUser?.photoUrl?.toString() ?: "",
+			id = videoId,
+			url = videoUri.toString(),
+			preview = PreviewImage(
+				id = previewId,
+				url = previewUri.toString()
+			),
+			uploader = User(
+				uid = mFirebaseAuth.currentUser?.uid ?: "",
+				name = mFirebaseAuth.currentUser?.displayName ?: "",
+				email = mFirebaseAuth.currentUser?.email ?: "",
+				photoUrl = mFirebaseAuth.currentUser?.photoUrl?.toString() ?: "",
+			),
 			uploadTimestamp = System.currentTimeMillis(),
 			likedEmails = emptyList()
 		)
-		reference.child(key.key!!).setValue(newRecord)
+		reference.child(videoId).setValue(newRecord)
+
+		mChannelFlow.sendBlocking(UploadVideoState.Finished)
 	}
 }

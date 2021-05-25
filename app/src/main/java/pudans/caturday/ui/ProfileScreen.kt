@@ -184,7 +184,7 @@ private fun Pager(
 	HorizontalPager(state = pagerState) { page ->
 		when (val listState = data[page]) {
 			is ProfileVideoListState.Data -> List(listState.items, onItemClick)
-			ProfileVideoListState.Empty -> EmptyList()
+			ProfileVideoListState.Empty -> EmptyPager()
 			ProfileVideoListState.Loading -> Loading()
 		}
 	}
@@ -200,12 +200,12 @@ private fun List(
 		cells = GridCells.Fixed(3),
 		modifier = Modifier.fillMaxSize()
 	) {
-		items(items.size) { ListItem(items[it], onItemClick) }
+		items(items.size) { PagerItem(items[it], onItemClick) }
 	}
 }
 
 @Composable
-private fun ListItem(
+private fun PagerItem(
 	item: ProfileVideoItemState,
 	onClick: (String) -> Unit
 ) {
@@ -226,7 +226,7 @@ private fun ListItem(
 }
 
 @Composable
-private fun EmptyList() {
+private fun EmptyPager() {
 	Box(modifier = Modifier.fillMaxSize()) {
 		Text(
 			text = "EMPTY",

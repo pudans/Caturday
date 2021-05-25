@@ -2,13 +2,11 @@ import pudans.caturday.buildsrc.Dependencies
 
 plugins {
 	id("com.android.application")
-	id("kotlin-android")
-//	id("kotlin-android-extensions")
-//	kotlin("android.extensions")
+	kotlin("android")
 	kotlin("kapt")
 	id("dagger.hilt.android.plugin")
 	id("com.google.gms.google-services")
-	id("io.gitlab.arturbosch.detekt")
+//	id("io.gitlab.arturbosch.detekt")
 }
 
 android {

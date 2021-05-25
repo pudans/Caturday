@@ -75,7 +75,7 @@ class ProfileViewModel
 	)
 
 	private fun createProfileVideoItemState(video: Video) = ProfileVideoItemState(
-		id = video.videoName,
-		url = video.previewUrl
+		id = video.id ?: "",
+		url = video.preview?.url ?: ""
 	)
 }

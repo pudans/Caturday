@@ -13,6 +13,7 @@ import kotlinx.coroutines.flow.onStart
 import kotlinx.coroutines.launch
 import pudans.caturday.model.Video
 import pudans.caturday.repository.FeedRepository
+import pudans.caturday.repository.LikeRepository
 import pudans.caturday.state.FeedItemState
 import pudans.caturday.state.FeedScreenState
 import javax.inject.Inject
@@ -23,7 +24,8 @@ import javax.inject.Inject
 class FeedViewModel
 @Inject constructor(
 	private val mFirebaseAuth: FirebaseAuth,
-	private val mFeedRepository: FeedRepository
+	private val mFeedRepository: FeedRepository,
+	private val mFeedLikeRepository: LikeRepository
 ) : ViewModel() {
 
 	private val mFeedScreenState = mutableStateOf<FeedScreenState>(FeedScreenState.Loading)
@@ -34,22 +36,36 @@ class FeedViewModel
 				.onStart { mFeedScreenState.value = FeedScreenState.Loading }
 				.collect { result ->
 					mFeedScreenState.value = when {
-						result.isNotEmpty() -> FeedScreenState.Data(result.map { generateFeedItemState(it) })
+						result.isNotEmpty() -> FeedScreenState.Data(result.mapIndexed { index, video ->
+							generateFeedItemState(video, index, result)
+						})
 						else -> FeedScreenState.Empty
 					}
 				}
 		}
 	}
 
-	private fun generateFeedItemState(video: Video) = FeedItemState(
-		videoUrl = video.videoUrl,
-		videoPreviewUrl = video.previewUrl,
-		uploaderAvatarUrl = video.uploaderAvatarUrl,
-		uploaderNick = "@${video.uploaderEmail.split('@').first()}",
-		likedNicks = "Likes: ${video.likedEmails.joinToString(", ") { "@${video.uploaderEmail.split('@').first()}" }}",
-		likesCount = video.likedEmails.size,
-		isLikedByUser = video.likedEmails.contains(mFirebaseAuth.currentUser?.email)
+	private fun generateFeedItemState(video: Video, index: Int, list: List<Video>) = FeedItemState(
+		videoId = video.id ?: "",
+		videoUrl = video.url ?: "",
+		videoPreviewUrl = video.preview?.url ?: "",
+		uploaderAvatarUrl = video.uploader?.photoUrl ?: "",
+		uploaderNick = "@${video.uploader?.email?.split('@')?.first()}",
+		likedNicks = "Likes: ${video.likedEmails?.joinToString(", ") { "@${it.split('@').first()}" }}",
+		likesCount = video.likedEmails?.size ?: 0,
+		isLikedByUser = video.likedEmails?.contains(mFirebaseAuth.currentUser?.email) ?: false,
+		numberOfVideos = "${index + 1}/${list.size}",
 	)
 
 	fun observeFeedScreenState(): State<FeedScreenState> = mFeedScreenState
+
+	fun likeOrDislike(videoId: String) {
+
+		viewModelScope.launch {
+			mFeedLikeRepository.getLikedVideos(videoId).collect {
+
+			}
+		}
+
+	}
 }

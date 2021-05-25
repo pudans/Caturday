@@ -1,8 +1,8 @@
 package pudans.caturday.model
 
 data class User(
-	val uid: String?,
-	val name: String?,
-	val email: String?,
-	val photoUrl: String?
+	val uid: String? = null,
+	val name: String? = null,
+	val email: String? = null,
+	val photoUrl: String? = null
 )

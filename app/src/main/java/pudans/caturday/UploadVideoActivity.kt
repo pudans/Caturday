@@ -37,6 +37,8 @@ class UploadVideoActivity : AppCompatActivity() {
 
 		(intent.getParcelableExtra<Parcelable>(Intent.EXTRA_STREAM) as? Uri)?.let { uri ->
 			model.setVideoSource(uri)
+		} ?: kotlin.run {
+			getContent.launch("video/*")
 		}
 	}
 }

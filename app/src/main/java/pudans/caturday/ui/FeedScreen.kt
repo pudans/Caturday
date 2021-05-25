@@ -1,5 +1,6 @@
 package pudans.caturday.ui
 
+import android.net.Uri
 import android.view.TextureView
 import android.view.ViewGroup
 import android.widget.FrameLayout
@@ -24,6 +25,7 @@ import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.CircularProgressIndicator
 import androidx.compose.material.Icon
+import androidx.compose.material.LinearProgressIndicator
 import androidx.compose.material.Text
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Favorite
@@ -50,14 +52,29 @@ import com.google.accompanist.pager.ExperimentalPagerApi
 import com.google.accompanist.pager.VerticalPager
 import com.google.accompanist.pager.rememberPagerState
 import com.google.android.exoplayer2.C
+import com.google.android.exoplayer2.DefaultLoadControl
+import com.google.android.exoplayer2.DefaultRenderersFactory
 import com.google.android.exoplayer2.MediaItem
 import com.google.android.exoplayer2.Player
 import com.google.android.exoplayer2.SimpleExoPlayer
+import com.google.android.exoplayer2.source.DefaultMediaSourceFactory
+import com.google.android.exoplayer2.source.MediaSourceFactory
+import com.google.android.exoplayer2.source.ProgressiveMediaSource
+import com.google.android.exoplayer2.trackselection.DefaultTrackSelector
+import com.google.android.exoplayer2.upstream.DataSource
+import com.google.android.exoplayer2.upstream.DefaultHttpDataSourceFactory
+import com.google.android.exoplayer2.upstream.cache.CacheDataSourceFactory
+import com.google.android.exoplayer2.upstream.cache.LeastRecentlyUsedCacheEvictor
+import com.google.android.exoplayer2.upstream.cache.SimpleCache
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.FlowPreview
 import pudans.caturday.FeedViewModel
 import pudans.caturday.state.FeedItemState
 import pudans.caturday.state.FeedScreenState
+import java.io.File
+import com.google.android.exoplayer2.upstream.DefaultDataSourceFactory
+import pudans.caturday.CacheUtils
+
 
 @ExperimentalAnimationApi
 @FlowPreview
@@ -77,8 +94,10 @@ fun FeedScreen() {
 	) {
 
 		when (state) {
-			is FeedScreenState.Data -> FeedList(items = (state as FeedScreenState.Data).items)
-			FeedScreenState.Empty -> EmptyList()
+			is FeedScreenState.Data -> FeedPager(items = (state as FeedScreenState.Data).items) {
+				viewModel.likeOrDislike(it)
+			}
+			FeedScreenState.Empty -> EmptyPager()
 			FeedScreenState.Loading -> Loading()
 		}
 	}
@@ -87,97 +106,46 @@ fun FeedScreen() {
 @ExperimentalAnimationApi
 @ExperimentalPagerApi
 @Composable
-private fun FeedList(
-	items: List<FeedItemState>
+private fun FeedPager(
+	items: List<FeedItemState>,
+	onLikeClick: (String) -> Unit
 ) {
-
 	val pagerState = rememberPagerState(pageCount = items.size)
-
-//	snapshotFlow { pagerState.currentPage }.collectAsState(initial = 0)
 
 	VerticalPager(
 		state = pagerState
-	) { page ->
+	) { page -> PagerItem(items[page], isSelected = page == pagerState.currentPage, onLikeClick) }
+}
 
-		val itemState = items[page]
+@ExperimentalAnimationApi
+@Composable
+private fun PagerItem(
+	itemState: FeedItemState,
+	isSelected: Boolean,
+	onLikeClick: (String) -> Unit
+) {
+	Box(
+		modifier = Modifier
+			.fillMaxSize()
+			.clip(shape = RoundedCornerShape(16.dp)),
+	) {
 
-		Box(
-			modifier = Modifier
-				.fillMaxSize()
-				.clip(shape = RoundedCornerShape(16.dp)),
-		) {
+		FeedVideoPlayer(
+			videoUrl = itemState.videoUrl,
+			previewUrl = itemState.videoPreviewUrl,
+			isPlayWhenReady = isSelected
+		)
 
-			FeedVideoPlayer(
-				videoUrl = itemState.videoUrl,
-				previewUrl = itemState.videoPreviewUrl,
-				isPlayWhenReady = page == pagerState.currentPage
-			)
+		RightControlsBlock(itemState, onLikeClick)
 
-			Column(
-				modifier = Modifier
-					.fillMaxWidth()
-					.align(Alignment.BottomCenter)
-					.padding(16.dp)
-			) {
+		BottomBlock(itemState)
 
-				Text(
-					text = itemState.uploaderNick,
-					color = Color.White
-				)
-
-				Spacer(modifier = Modifier.height(4.dp))
-
-				Text(
-					text = itemState.likedNicks,
-					color = Color.White
-				)
-			}
-
-			Column(
-				modifier = Modifier
-					.align(Alignment.CenterEnd)
-					.width(80.dp)
-					.padding(16.dp)
-			) {
-
-				Image(
-					painter = rememberCoilPainter(
-						request = itemState.uploaderAvatarUrl,
-						fadeIn = true
-					),
-					contentDescription = "",
-					contentScale = ContentScale.Crop,
-					modifier = Modifier
-						.size(48.dp)
-						.align(alignment = Alignment.CenterHorizontally)
-						.clip(CircleShape)
-						.border(2.dp, Color.White, CircleShape)
-				)
-
-				Spacer(modifier = Modifier.height(16.dp))
-
-				Icon(
-					imageVector = Icons.Filled.Favorite,
-					tint = Color.White,
-					contentDescription = "",
-					modifier = Modifier.size(48.dp)
-				)
-
-				Spacer(modifier = Modifier.height(4.dp))
-
-				Text(
-					text = itemState.likesCount.toString(),
-					textAlign = TextAlign.Center,
-					color = Color.White,
-					modifier = Modifier.fillMaxWidth()
-				)
-			}
-		}
+		RightTopBlock(itemState)
 	}
 }
 
 @Composable
-private fun EmptyList() {
+private fun EmptyPager() {
 	Box(modifier = Modifier.fillMaxSize()) {
 		Text(
 			text = "EMPTY",
@@ -200,6 +168,122 @@ private fun Loading() {
 	}
 }
 
+@Composable
+private fun RightControlsBlock(
+	itemState: FeedItemState,
+	onLikeClick: (String) -> Unit
+) {
+	Box(
+		modifier = Modifier.fillMaxSize()
+	) {
+		Column(
+			modifier = Modifier
+				.width(80.dp)
+				.padding(16.dp)
+				.align(Alignment.CenterEnd)
+		) {
+
+			UploaderAvatar(itemState.uploaderAvatarUrl)
+
+			Spacer(modifier = Modifier.height(16.dp))
+
+			LikeIcon(isLiked = itemState.isLikedByUser) {
+				onLikeClick.invoke(itemState.videoId)
+			}
+
+			Spacer(modifier = Modifier.height(4.dp))
+
+			LikesCount(itemState.likesCount)
+		}
+	}
+}
+
+@Composable
+private fun UploaderAvatar(avatarUrl: String) {
+	Image(
+		painter = rememberCoilPainter(
+			request = avatarUrl,
+			fadeIn = true
+		),
+		contentDescription = "",
+		contentScale = ContentScale.Crop,
+		modifier = Modifier
+			.size(48.dp)
+			.clip(CircleShape)
+			.border(2.dp, Color.White, CircleShape)
+	)
+}
+
+@Composable
+private fun LikeIcon(
+	isLiked: Boolean,
+	onClick: () -> Unit
+) {
+	Icon(
+		imageVector = Icons.Filled.Favorite,
+		tint = if (isLiked) Color.Red else Color.White,
+		contentDescription = "",
+		modifier = Modifier
+			.size(48.dp)
+			.clickable(onClick = onClick)
+	)
+}
+
+@Composable
+private fun LikesCount(likesCount: Int) {
+	Text(
+		text = likesCount.toString(),
+		textAlign = TextAlign.Center,
+		color = Color.White,
+		modifier = Modifier.fillMaxWidth()
+	)
+}
+
+@Composable
+private fun BottomBlock(itemState: FeedItemState) {
+	Box(modifier = Modifier.fillMaxSize()) {
+		Column(
+			modifier = Modifier
+				.fillMaxWidth()
+				.align(Alignment.BottomCenter)
+				.padding(16.dp)
+		) {
+
+			Text(
+				text = itemState.uploaderNick,
+				color = Color.White
+			)
+
+			Spacer(modifier = Modifier.height(4.dp))
+
+			Text(
+				text = itemState.likedNicks,
+				color = Color.White
+			)
+		}
+	}
+}
+
+@Composable
+private fun RightTopBlock(itemState: FeedItemState) {
+	Box(
+		modifier = Modifier
+			.fillMaxSize()
+			.padding(16.dp)
+	) {
+
+		Text(
+			text = itemState.numberOfVideos,
+			color = Color.White,
+			modifier = Modifier
+				.align(Alignment.TopStart)
+				.clip(RoundedCornerShape(8.dp))
+				.padding(8.dp)
+				.background(Color.Black)
+		)
+	}
+}
+
 
 @ExperimentalAnimationApi
 @Composable
@@ -216,20 +300,29 @@ fun FeedVideoPlayer(
 
 	var previewImageState by remember { mutableStateOf(true) }
 
-//	var progressState by remember { mutableStateOf(0.0f) }
+	var progressState by remember { mutableStateOf(0.0f) }
 
 	val exoPlayer = remember {
-		SimpleExoPlayer.Builder(context).build().apply {
-			playWhenReady = false
-			videoScalingMode = C.VIDEO_SCALING_MODE_DEFAULT
-			repeatMode = Player.REPEAT_MODE_ALL
 
-			addListener(object : Player.Listener {
-				override fun onRenderedFirstFrame() {
-					previewImageState = false
-				}
-			})
-		}
+
+//
+		val cacheDataSourceFactory = CacheDataSourceFactory(CacheUtils.getCache(context), DefaultHttpDataSourceFactory("Catuday"))
+//
+		val mediaSourceFactory: MediaSourceFactory = DefaultMediaSourceFactory(cacheDataSourceFactory)
+
+		SimpleExoPlayer.Builder(context)
+			.setMediaSourceFactory(mediaSourceFactory)
+			.build().apply {
+				playWhenReady = false
+				videoScalingMode = C.VIDEO_SCALING_MODE_DEFAULT
+				repeatMode = Player.REPEAT_MODE_ALL
+
+				addListener(object : Player.Listener {
+					override fun onRenderedFirstFrame() {
+						previewImageState = false
+					}
+				})
+			}
 	}
 
 	LaunchedEffect(videoUrl) {
@@ -250,70 +343,91 @@ fun FeedVideoPlayer(
 
 	LaunchedEffect(isPlayWhenReady, playPauseState) {
 		exoPlayer.playWhenReady = isPlayWhenReady && playPauseState
-
-
 	}
 
 	Box(
-		modifier = Modifier.fillMaxSize().clickable { playPauseState = !playPauseState }
+		modifier = Modifier
+			.fillMaxSize()
+			.clickable { playPauseState = !playPauseState }
 	) {
 		DisposableEffect(
-			AndroidView(
-				factory = {
-					TextureView(it).apply {
-						layoutParams = FrameLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.MATCH_PARENT)
-						exoPlayer.setVideoTextureView(this)
-					}
-				})
+			TextureView(exoPlayer)
 		) {
-
-			onDispose {
-				exoPlayer.release()
-			}
+			onDispose { exoPlayer.release() }
 		}
 
-//		LinearProgressIndicator(
-//			progress = 0.1f,
-//			modifier = Modifier
-//				.fillMaxWidth()
-//				.height(4.dp)
-//				.align(Alignment.BottomCenter)
-//				.padding(start = 16.dp, end = 16.dp)
-//				.clip(shape = RoundedCornerShape(2.dp)),
-//			backgroundColor = Color.Transparent,
-//			color = Color.Red,
-//		)
+		PreviewImage(previewImageState, previewUrl)
 
+		ProgressBar(progressState)
+
+		PlayPauseIcon(playPauseState)
+	}
+}
+
+@Composable
+private fun TextureView(exoPlayer: SimpleExoPlayer) {
+	AndroidView(
+		factory = {
+			TextureView(it).apply {
+				layoutParams = FrameLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.MATCH_PARENT)
+				exoPlayer.setVideoTextureView(this)
+			}
+		})
+}
+
+@Composable
+private fun ProgressBar(progressState: Float) {
+	LinearProgressIndicator(
+		progress = progressState,
+		modifier = Modifier
+			.fillMaxWidth()
+			.height(4.dp)
+			.padding(start = 16.dp, end = 16.dp)
+			.clip(shape = RoundedCornerShape(2.dp)),
+		backgroundColor = Color.Transparent,
+		color = Color.Red,
+	)
+}
+
+@ExperimentalAnimationApi
+@Composable
+private fun PreviewImage(
+	previewImageState: Boolean,
+	previewUrl: String
+) {
+	AnimatedVisibility(
+		visible = previewImageState,
+		modifier = Modifier.fillMaxSize(),
+		enter = fadeIn(),
+		exit = fadeOut()
+	) {
+		Image(
+			contentScale = ContentScale.Crop,
+			painter = rememberCoilPainter(request = previewUrl),
+			contentDescription = ""
+		)
+	}
+}
+
+@ExperimentalAnimationApi
+@Composable
+private fun PlayPauseIcon(playPauseState: Boolean) {
+	Box(
+		modifier = Modifier.fillMaxSize()
+	) {
 		AnimatedVisibility(
-			visible = previewImageState,
-			modifier = Modifier.fillMaxSize(),
+			visible = !playPauseState,
+			modifier = Modifier
+				.size(56.dp)
+				.align(Alignment.Center),
 			enter = fadeIn(),
 			exit = fadeOut()
 		) {
-			Image(
-				contentScale = ContentScale.Crop,
-				painter = rememberCoilPainter(request = previewUrl),
-				contentDescription = ""
+			Icon(
+				imageVector = Icons.Filled.PlayCircleOutline,
+				contentDescription = "",
+				tint = Color.White
 			)
-		}
-
-		Box(
-			modifier = Modifier.fillMaxSize()
-		) {
-			AnimatedVisibility(
-				visible = !playPauseState,
-				modifier = Modifier
-					.size(56.dp)
-					.align(Alignment.Center),
-				enter = fadeIn(),
-				exit = fadeOut()
-			) {
-				Icon(
-					imageVector = Icons.Filled.PlayCircleOutline,
-					contentDescription = "",
-					tint = Color.White
-				)
-			}
 		}
 	}
 }

@@ -1,7 +1,10 @@
 package pudans.caturday.repository
 
 import com.google.firebase.auth.FirebaseAuth
+import com.google.firebase.database.DataSnapshot
+import com.google.firebase.database.DatabaseError
 import com.google.firebase.database.FirebaseDatabase
+import com.google.firebase.database.ValueEventListener
 import pudans.caturday.model.Video
 import javax.inject.Inject
 import com.google.firebase.database.ktx.getValue
@@ -23,13 +26,22 @@ class ProfileLikedRepository
 	private val mChannelFlow = ConflatedBroadcastChannel<List<Video>>()
 
 	init {
-		firebaseDatabase.reference.get().addOnSuccessListener { dataSnapshot ->
-			val result = dataSnapshot
-				.children
-				.mapNotNull { it.getValue<Video>() }
-				.filter { it.likedEmails.contains(firebaseAuth.currentUser?.email) }
-			mChannelFlow.sendBlocking(result)
-		}
+
+		firebaseDatabase.reference.addValueEventListener(object : ValueEventListener {
+
+			override fun onDataChange(snapshot: DataSnapshot) {
+				val result = snapshot
+					.children
+					.mapNotNull { it.getValue<Video>() }
+					.filter { it.likedEmails?.contains(firebaseAuth.currentUser?.email) ?: false }
+				mChannelFlow.sendBlocking(result)
+			}
+
+			override fun onCancelled(error: DatabaseError) {
+//				TODO("Not yet implemented")
+			}
+
+		})
 	}
 
 	fun getLikedVideos(): Flow<List<Video>> = mChannelFlow.asFlow()

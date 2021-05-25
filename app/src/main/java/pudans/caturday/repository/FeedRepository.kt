@@ -1,6 +1,9 @@
 package pudans.caturday.repository
 
+import com.google.firebase.database.DataSnapshot
+import com.google.firebase.database.DatabaseError
 import com.google.firebase.database.FirebaseDatabase
+import com.google.firebase.database.ValueEventListener
 import pudans.caturday.model.Video
 import javax.inject.Inject
 import com.google.firebase.database.ktx.getValue
@@ -21,10 +24,19 @@ class FeedRepository
 	private val mChannelFlow = ConflatedBroadcastChannel<List<Video>>()
 
 	init {
-		firebaseDatabase.reference.get().addOnSuccessListener { dataSnapshot ->
-			val result = dataSnapshot.children.mapNotNull { it.getValue<Video>() }.reversed()
-			mChannelFlow.sendBlocking(result)
-		}
+
+		firebaseDatabase.reference.addValueEventListener(object : ValueEventListener {
+
+			override fun onDataChange(snapshot: DataSnapshot) {
+				val result = snapshot.children.mapNotNull { it.getValue<Video>() }.sortedBy { -it.uploadTimestamp }
+				mChannelFlow.sendBlocking(result)
+			}
+
+			override fun onCancelled(error: DatabaseError) {
+//				TODO("Not yet implemented")
+			}
+
+		})
 	}
 
 	fun getFeed(): Flow<List<Video>> = mChannelFlow.asFlow()
