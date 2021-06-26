@@ -9,10 +9,10 @@ buildscript {
 		mavenCentral()
 	}
 	dependencies {
-		classpath("com.android.tools.build:gradle:7.0.0-beta02")
-		classpath(kotlin("gradle-plugin", version = "1.4.32"))
+		classpath("com.android.tools.build:gradle:7.1.0-alpha02")
+		classpath(kotlin("gradle-plugin", version = "1.5.10"))
 //		classpath("org.jetbrains.kotlin:kotlin-gradle-plugin:1.4.32")
-		classpath("com.google.dagger:hilt-android-gradle-plugin:2.34-beta")
+		classpath("com.google.dagger:hilt-android-gradle-plugin:2.37")
 		classpath("com.google.gms:google-services:4.3.8")
 	}
 }

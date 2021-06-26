@@ -68,18 +68,18 @@ dependencies {
 	implementation(Dependencies.Compose.material)
 	implementation(Dependencies.Compose.material_icons)
 
-	implementation("androidx.activity:activity-compose:1.3.0-alpha08")
+	implementation("androidx.activity:activity-compose:1.3.0-beta02")
 
-	implementation("androidx.navigation:navigation-compose:2.4.0-alpha01")
-	implementation("androidx.hilt:hilt-navigation-compose:1.0.0-alpha02")
+	implementation("androidx.navigation:navigation-compose:2.4.0-alpha03")
+	implementation("androidx.hilt:hilt-navigation-compose:1.0.0-alpha03")
 
 	implementation(Dependencies.Lifecycle.livedata)
 	implementation(Dependencies.Lifecycle.runtime)
 	implementation(Dependencies.Lifecycle.viewmodel)
 
-	implementation(Dependencies.Room.core)
-	kapt(Dependencies.Room.runtime)
-	kapt(Dependencies.Room.compiler)
+//	implementation(Dependencies.Room.core)
+//	kapt(Dependencies.Room.runtime)
+//	kapt(Dependencies.Room.compiler)
 
 	// hilt
 	implementation("com.google.dagger:hilt-android:2.35")
@@ -87,13 +87,13 @@ dependencies {
 	kapt("androidx.hilt:hilt-compiler:1.0.0")
 
 	// coroutines
-	implementation("org.jetbrains.kotlinx:kotlinx-coroutines-android:1.4.3")
+	implementation("org.jetbrains.kotlinx:kotlinx-coroutines-android:1.5.0")
 
 	// debugging
 	implementation(Dependencies.Timber.core)
 
-	implementation("com.google.accompanist:accompanist-coil:0.10.0")
-	implementation("com.google.accompanist:accompanist-pager:0.10.0")
-	implementation("com.google.accompanist:accompanist-pager-indicators:0.10.0")
+	implementation("com.google.accompanist:accompanist-coil:0.12.0")
+	implementation("com.google.accompanist:accompanist-pager:0.12.0")
+	implementation("com.google.accompanist:accompanist-pager-indicators:0.12.0")
 
 }
