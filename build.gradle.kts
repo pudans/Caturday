@@ -1,12 +1,9 @@
-//plugins {
-//	id("io.gitlab.arturbosch.detekt").version("1.17.0")
-//}
-
 buildscript {
 
 	repositories {
 		google()
 		mavenCentral()
+		gradlePluginPortal()
 	}
 	dependencies {
 		classpath(dependencyNotation = "com.android.tools.build:gradle:7.1.0-alpha03")
@@ -18,9 +15,6 @@ buildscript {
 
 allprojects {
 	repositories {
-//		maven {
-//			url = uri("http://jcenter.bintray.com")
-//		}
 		google()
 		mavenCentral()
 	}
@@ -29,9 +23,3 @@ allprojects {
 tasks.register("clean", Delete::class) {
 	delete(rootProject.buildDir)
 }
-
-//detekt {
-//	toolVersion = "1.17.0"
-//	config = files("config/detekt/detekt.yml")
-//	buildUponDefaultConfig = true
-//}
