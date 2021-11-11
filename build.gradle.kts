@@ -9,11 +9,11 @@ buildscript {
 		mavenCentral()
 	}
 	dependencies {
-		classpath("com.android.tools.build:gradle:7.1.0-alpha02")
-		classpath(kotlin("gradle-plugin", version = "1.5.10"))
-//		classpath("org.jetbrains.kotlin:kotlin-gradle-plugin:1.4.32")
-		classpath("com.google.dagger:hilt-android-gradle-plugin:2.37")
-		classpath("com.google.gms:google-services:4.3.8")
+//		classpath(dependencyNotation = "com.android.tools.build:gradle:7.1.0-alpha13")
+		classpath("com.android.tools.build:gradle:7.0.1")
+		classpath(kotlin(module = "gradle-plugin", version = "1.5.31"))
+		classpath(dependencyNotation = "com.google.dagger:hilt-android-gradle-plugin:2.40")
+		classpath(dependencyNotation = "com.google.gms:google-services:4.3.10")
 	}
 }
 

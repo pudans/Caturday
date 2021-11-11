@@ -75,7 +75,7 @@ fun ProfileScreen() {
 		Spacer(modifier = Modifier.size(24.dp))
 
 		val pages = arrayOf("UPLOADED", "LIKED")
-		val pagerState = rememberPagerState(pageCount = pages.size)
+		val pagerState = rememberPagerState()
 
 		Tabs(pages, pagerState)
 
@@ -181,7 +181,10 @@ private fun Pager(
 	pagerState: PagerState,
 	onItemClick: (String) -> Unit
 ) {
-	HorizontalPager(state = pagerState) { page ->
+	HorizontalPager(
+		count = data.size,
+		state = pagerState
+	) { page ->
 		when (val listState = data[page]) {
 			is ProfileVideoListState.Data -> List(listState.items, onItemClick)
 			ProfileVideoListState.Empty -> EmptyPager()

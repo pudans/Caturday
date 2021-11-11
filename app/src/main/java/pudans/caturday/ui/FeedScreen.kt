@@ -62,8 +62,8 @@ import com.google.android.exoplayer2.source.MediaSourceFactory
 import com.google.android.exoplayer2.source.ProgressiveMediaSource
 import com.google.android.exoplayer2.trackselection.DefaultTrackSelector
 import com.google.android.exoplayer2.upstream.DataSource
-import com.google.android.exoplayer2.upstream.DefaultHttpDataSourceFactory
-import com.google.android.exoplayer2.upstream.cache.CacheDataSourceFactory
+//import com.google.android.exoplayer2.upstream.DefaultHttpDataSourceFactory
+//import com.google.android.exoplayer2.upstream.cache.CacheDataSourceFactory
 import com.google.android.exoplayer2.upstream.cache.LeastRecentlyUsedCacheEvictor
 import com.google.android.exoplayer2.upstream.cache.SimpleCache
 import kotlinx.coroutines.ExperimentalCoroutinesApi
@@ -110,9 +110,10 @@ private fun FeedPager(
 	items: List<FeedItemState>,
 	onLikeClick: (String) -> Unit
 ) {
-	val pagerState = rememberPagerState(pageCount = items.size)
+	val pagerState = rememberPagerState()
 
 	VerticalPager(
+		count = items.size,
 		state = pagerState
 	) { page -> PagerItem(items[page], isSelected = page == pagerState.currentPage, onLikeClick) }
 }
@@ -306,9 +307,9 @@ fun FeedVideoPlayer(
 
 
 //
-		val cacheDataSourceFactory = CacheDataSourceFactory(CacheUtils.getCache(context), DefaultHttpDataSourceFactory("Catuday"))
+//		val cacheDataSourceFactory = CacheDataSourceFactory(CacheUtils.getCache(context), DefaultHttpDataSourceFactory("Catuday"))
 //
-		val mediaSourceFactory: MediaSourceFactory = DefaultMediaSourceFactory(cacheDataSourceFactory)
+		val mediaSourceFactory: MediaSourceFactory = DefaultMediaSourceFactory(context)
 
 		SimpleExoPlayer.Builder(context)
 			.setMediaSourceFactory(mediaSourceFactory)
