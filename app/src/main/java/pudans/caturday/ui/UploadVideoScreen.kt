@@ -24,7 +24,6 @@ import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.Button
 import androidx.compose.material.CircularProgressIndicator
 import androidx.compose.material.Icon
-import androidx.compose.material.LinearProgressIndicator
 import androidx.compose.material.MaterialTheme
 import androidx.compose.material.Scaffold
 import androidx.compose.material.Text
@@ -56,14 +55,10 @@ import com.google.android.exoplayer2.C
 import com.google.android.exoplayer2.MediaItem
 import com.google.android.exoplayer2.Player
 import com.google.android.exoplayer2.SimpleExoPlayer
-import kotlinx.coroutines.ExperimentalCoroutinesApi
-import kotlinx.coroutines.FlowPreview
 import pudans.caturday.UploadVideoViewModel
 import pudans.caturday.state.CheckerItemState
 import pudans.caturday.state.UploadVideoState
 
-@FlowPreview
-@ExperimentalCoroutinesApi
 @Composable
 fun UploadVideoScreen(
 	onCloseClick: () -> Unit

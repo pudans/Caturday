@@ -6,20 +6,16 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.google.firebase.auth.FirebaseAuth
 import dagger.hilt.android.lifecycle.HiltViewModel
-import kotlinx.coroutines.ExperimentalCoroutinesApi
-import kotlinx.coroutines.FlowPreview
 import kotlinx.coroutines.flow.collect
-import kotlinx.coroutines.flow.onStart
 import kotlinx.coroutines.launch
 import pudans.caturday.model.Video
+import pudans.caturday.model.VideosResult
 import pudans.caturday.repository.FeedRepository
 import pudans.caturday.repository.LikeRepository
 import pudans.caturday.state.FeedItemState
 import pudans.caturday.state.FeedScreenState
 import javax.inject.Inject
 
-@FlowPreview
-@ExperimentalCoroutinesApi
 @HiltViewModel
 class FeedViewModel
 @Inject constructor(
@@ -33,13 +29,15 @@ class FeedViewModel
 	init {
 		viewModelScope.launch {
 			mFeedRepository.getFeed()
-				.onStart { mFeedScreenState.value = FeedScreenState.Loading }
 				.collect { result ->
-					mFeedScreenState.value = when {
-						result.isNotEmpty() -> FeedScreenState.Data(result.mapIndexed { index, video ->
-							generateFeedItemState(video, index, result)
-						})
-						else -> FeedScreenState.Empty
+					mFeedScreenState.value = when (result) {
+						is VideosResult.Data -> {
+							FeedScreenState.Data(result.data.mapIndexed { index, video ->
+								generateFeedItemState(video, index, result.data)
+							})
+						}
+						VideosResult.Error -> FeedScreenState.Empty
+						VideosResult.Loading -> FeedScreenState.Loading
 					}
 				}
 		}
@@ -60,12 +58,8 @@ class FeedViewModel
 	fun observeFeedScreenState(): State<FeedScreenState> = mFeedScreenState
 
 	fun likeOrDislike(videoId: String) {
-
 		viewModelScope.launch {
-			mFeedLikeRepository.getLikedVideos(videoId).collect {
-
-			}
+			mFeedLikeRepository.likeOrDislike(videoId).collect {}
 		}
-
 	}
 }

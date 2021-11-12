@@ -6,14 +6,10 @@ import androidx.activity.compose.setContent
 import androidx.appcompat.app.AppCompatActivity
 import androidx.compose.animation.AnimatedVisibility
 import androidx.compose.animation.AnimatedVisibilityScope
-import androidx.compose.animation.ExperimentalAnimationApi
 import androidx.compose.animation.core.MutableTransitionState
-import androidx.compose.animation.expandVertically
 import androidx.compose.animation.fadeIn
 import androidx.compose.animation.fadeOut
-import androidx.compose.animation.shrinkVertically
 import androidx.compose.animation.slideInHorizontally
-import androidx.compose.animation.slideInVertically
 import androidx.compose.animation.slideOutVertically
 import androidx.compose.foundation.ExperimentalFoundationApi
 import androidx.compose.foundation.layout.Box
@@ -26,7 +22,6 @@ import androidx.compose.material.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.remember
-import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.stringResource
@@ -35,28 +30,18 @@ import androidx.navigation.compose.composable
 import androidx.navigation.compose.currentBackStackEntryAsState
 import androidx.navigation.compose.rememberNavController
 import com.google.accompanist.pager.ExperimentalPagerApi
-import com.google.firebase.auth.FirebaseAuth
 import dagger.hilt.android.AndroidEntryPoint
-import kotlinx.coroutines.ExperimentalCoroutinesApi
-import kotlinx.coroutines.FlowPreview
 import pudans.caturday.ui.FeedScreen
 import pudans.caturday.ui.ProfileScreen
 import pudans.caturday.ui.theme.CaturdayTheme
 
-@FlowPreview
+@ExperimentalFoundationApi
 @AndroidEntryPoint
 @ExperimentalPagerApi
-@ExperimentalFoundationApi
-@ExperimentalCoroutinesApi
-@ExperimentalAnimationApi
 class MainActivity : AppCompatActivity() {
 
 	override fun onCreate(savedInstanceState: Bundle?) {
 		super.onCreate(savedInstanceState)
-
-		if (FirebaseAuth.getInstance().currentUser == null) {
-			startActivity(Intent(this, LoginActivity::class.java))
-		}
 
 		setContent {
 			val navController = rememberNavController()
@@ -124,7 +109,6 @@ private fun NavigationLAbel(isSelected: Boolean, screen: Screen) {
 	)
 }
 
-@ExperimentalAnimationApi
 @Composable
 fun ProfileTransitionAnimation(content: @Composable AnimatedVisibilityScope.() -> Unit) {
 	AnimatedVisibility(
@@ -135,7 +119,6 @@ fun ProfileTransitionAnimation(content: @Composable AnimatedVisibilityScope.() -
 	)
 }
 
-@ExperimentalAnimationApi
 @Composable
 fun FeedTransitionAnimation(content: @Composable AnimatedVisibilityScope.() -> Unit) {
 	AnimatedVisibility(

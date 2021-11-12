@@ -1,8 +1,11 @@
 package pudans.caturday
 
+import android.content.Intent
 import android.widget.Toast
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.appcompat.app.AppCompatActivity
+import androidx.compose.foundation.ExperimentalFoundationApi
+import com.google.accompanist.pager.ExperimentalPagerApi
 import com.google.android.gms.auth.api.signin.GoogleSignIn
 import com.google.android.gms.auth.api.signin.GoogleSignInOptions
 import com.google.android.gms.common.api.ApiException
@@ -10,6 +13,8 @@ import com.google.firebase.auth.GoogleAuthProvider
 import com.google.firebase.auth.ktx.auth
 import com.google.firebase.ktx.Firebase
 
+@ExperimentalFoundationApi
+@ExperimentalPagerApi
 class LoginActivity : AppCompatActivity() {
 
 	private val mFirebaseAuth = Firebase.auth
@@ -21,43 +26,49 @@ class LoginActivity : AppCompatActivity() {
 				.getResult(ApiException::class.java)
 				.idToken?.let { firebaseAuthWithGoogle(it) }
 		} catch (e: Throwable) {
-			printText("Error while login")
+			onFailLogin()
 		}
 	}
 
 	override fun onStart() {
 		super.onStart()
-
-		printText("Sign in")
+		printText("Signing in")
 		signIn()
 	}
 
 	private fun signIn() {
 		val options = GoogleSignInOptions.Builder(GoogleSignInOptions.DEFAULT_SIGN_IN)
-			.requestIdToken(getString(R.string.default_web_client_id))
+			.requestIdToken("664909726145-fqt5h52d3tn2oo5utpue0oh8set3uied.apps.googleusercontent.com")
 			.requestEmail()
 			.build()
-		mActivityResultListener.launch(GoogleSignIn.getClient(this, options).signInIntent)
-	}
-
-	private fun openFeedScreen() {
-		finish()
+		val client = GoogleSignIn.getClient(this@LoginActivity, options).signInIntent
+		mActivityResultListener.launch(client)
 	}
 
 	private fun firebaseAuthWithGoogle(idToken: String) {
 		val credential = GoogleAuthProvider.getCredential(idToken, null)
 		mFirebaseAuth
 			.signInWithCredential(credential)
-			.addOnCompleteListener(this) { task ->
-				if (task.isSuccessful) {
-					openFeedScreen()
-				} else {
-					printText("Error while login")
+			.addOnCompleteListener(this@LoginActivity) { task ->
+				when (task.isSuccessful) {
+					true -> onSuccessLogin()
+					false -> onFailLogin()
 				}
 			}
 	}
 
+	private fun onSuccessLogin() {
+		printText("Signed as ${mFirebaseAuth.currentUser?.displayName}")
+		startActivity(Intent(baseContext, MainActivity::class.java))
+		finish()
+	}
+
+	private fun onFailLogin() {
+		printText("Error while login")
+		finish()
+	}
+
 	private fun printText(text: String) {
-		Toast.makeText(this, text, Toast.LENGTH_SHORT).show()
+		Toast.makeText(this.baseContext, text, Toast.LENGTH_SHORT).show()
 	}
 }

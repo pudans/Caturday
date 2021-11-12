@@ -7,10 +7,18 @@ plugins {
 	id("dagger.hilt.android.plugin")
 	id("com.google.gms.google-services")
 //	id("io.gitlab.arturbosch.detekt")
-	id("io.gitlab.arturbosch.detekt") version "1.19.0-RC1"
+//	id("io.gitlab.arturbosch.detekt") version "1.19.0-RC1"
 }
 
 android {
+	signingConfigs {
+		create("release") {
+			storeFile = file("/home/konstantin/StudioProjects/Caturday/keystore_caturday.jks")
+			storePassword = "itautq93"
+			keyAlias = "key0"
+			keyPassword = "itautq93"
+		}
+	}
 	compileSdk = Dependencies.AndroidSdk.compileSdk
 	buildToolsVersion = Dependencies.AndroidSdk.buildToolsVersion
 
@@ -20,6 +28,7 @@ android {
 		targetSdk = Dependencies.AndroidSdk.targetSdk
 		versionCode = 1
 		versionName = "1.0"
+		signingConfig = signingConfigs.getByName("release")
 	}
 
 	buildTypes {

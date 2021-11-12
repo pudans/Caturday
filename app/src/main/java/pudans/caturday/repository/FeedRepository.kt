@@ -4,40 +4,33 @@ import com.google.firebase.database.DataSnapshot
 import com.google.firebase.database.DatabaseError
 import com.google.firebase.database.FirebaseDatabase
 import com.google.firebase.database.ValueEventListener
-import pudans.caturday.model.Video
-import javax.inject.Inject
 import com.google.firebase.database.ktx.getValue
-import kotlinx.coroutines.ExperimentalCoroutinesApi
-import kotlinx.coroutines.FlowPreview
-import kotlinx.coroutines.channels.ConflatedBroadcastChannel
-import kotlinx.coroutines.channels.sendBlocking
 import kotlinx.coroutines.flow.Flow
-import kotlinx.coroutines.flow.asFlow
+import kotlinx.coroutines.flow.MutableStateFlow
+import pudans.caturday.model.Video
+import pudans.caturday.model.VideosResult
+import javax.inject.Inject
 
-@FlowPreview
-@ExperimentalCoroutinesApi
 class FeedRepository
 @Inject constructor(
 	firebaseDatabase: FirebaseDatabase
 ) {
 
-	private val mChannelFlow = ConflatedBroadcastChannel<List<Video>>()
+	private val mChannelFlow = MutableStateFlow<VideosResult>(VideosResult.Loading)
 
 	init {
-
 		firebaseDatabase.reference.addValueEventListener(object : ValueEventListener {
 
 			override fun onDataChange(snapshot: DataSnapshot) {
 				val result = snapshot.children.mapNotNull { it.getValue<Video>() }.sortedBy { -it.uploadTimestamp }
-				mChannelFlow.sendBlocking(result)
+				mChannelFlow.value = VideosResult.Data(result)
 			}
 
 			override fun onCancelled(error: DatabaseError) {
-//				TODO("Not yet implemented")
+				mChannelFlow.value = VideosResult.Error
 			}
-
 		})
 	}
 
-	fun getFeed(): Flow<List<Video>> = mChannelFlow.asFlow()
+	fun getFeed(): Flow<VideosResult> = mChannelFlow
 }

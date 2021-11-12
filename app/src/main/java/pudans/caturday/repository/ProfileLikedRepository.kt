@@ -5,25 +5,20 @@ import com.google.firebase.database.DataSnapshot
 import com.google.firebase.database.DatabaseError
 import com.google.firebase.database.FirebaseDatabase
 import com.google.firebase.database.ValueEventListener
-import pudans.caturday.model.Video
-import javax.inject.Inject
 import com.google.firebase.database.ktx.getValue
-import kotlinx.coroutines.ExperimentalCoroutinesApi
-import kotlinx.coroutines.FlowPreview
-import kotlinx.coroutines.channels.ConflatedBroadcastChannel
-import kotlinx.coroutines.channels.sendBlocking
 import kotlinx.coroutines.flow.Flow
-import kotlinx.coroutines.flow.asFlow
+import kotlinx.coroutines.flow.MutableStateFlow
+import pudans.caturday.model.Video
+import pudans.caturday.model.VideosResult
+import javax.inject.Inject
 
-@FlowPreview
-@ExperimentalCoroutinesApi
 class ProfileLikedRepository
 @Inject constructor(
 	firebaseDatabase: FirebaseDatabase,
 	firebaseAuth: FirebaseAuth
 ) {
 
-	private val mChannelFlow = ConflatedBroadcastChannel<List<Video>>()
+	private val mChannelFlow = MutableStateFlow<VideosResult>(VideosResult.Loading)
 
 	init {
 
@@ -34,15 +29,16 @@ class ProfileLikedRepository
 					.children
 					.mapNotNull { it.getValue<Video>() }
 					.filter { it.likedEmails?.contains(firebaseAuth.currentUser?.email) ?: false }
-				mChannelFlow.sendBlocking(result)
+				mChannelFlow.value = VideosResult.Data(result)
+
 			}
 
 			override fun onCancelled(error: DatabaseError) {
-//				TODO("Not yet implemented")
+				mChannelFlow.value = VideosResult.Error
 			}
 
 		})
 	}
 
-	fun getLikedVideos(): Flow<List<Video>> = mChannelFlow.asFlow()
+	fun getLikedVideos(): Flow<VideosResult> = mChannelFlow
 }

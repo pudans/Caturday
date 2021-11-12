@@ -38,18 +38,14 @@ import com.google.accompanist.pager.HorizontalPager
 import com.google.accompanist.pager.PagerState
 import com.google.accompanist.pager.pagerTabIndicatorOffset
 import com.google.accompanist.pager.rememberPagerState
-import kotlinx.coroutines.ExperimentalCoroutinesApi
-import kotlinx.coroutines.FlowPreview
 import kotlinx.coroutines.launch
 import pudans.caturday.ProfileViewModel
 import pudans.caturday.state.ProfileState
 import pudans.caturday.state.ProfileVideoItemState
 import pudans.caturday.state.ProfileVideoListState
 
-@FlowPreview
-@ExperimentalPagerApi
 @ExperimentalFoundationApi
-@ExperimentalCoroutinesApi
+@ExperimentalPagerApi
 @Composable
 fun ProfileScreen() {
 

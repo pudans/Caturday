@@ -7,12 +7,10 @@ import androidx.lifecycle.viewModelScope
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.auth.FirebaseUser
 import dagger.hilt.android.lifecycle.HiltViewModel
-import kotlinx.coroutines.ExperimentalCoroutinesApi
-import kotlinx.coroutines.FlowPreview
 import kotlinx.coroutines.flow.collect
-import kotlinx.coroutines.flow.onStart
 import kotlinx.coroutines.launch
 import pudans.caturday.model.Video
+import pudans.caturday.model.VideosResult
 import pudans.caturday.repository.ProfileLikedRepository
 import pudans.caturday.repository.ProfileUploadedRepository
 import pudans.caturday.state.ProfileState
@@ -20,8 +18,6 @@ import pudans.caturday.state.ProfileVideoItemState
 import pudans.caturday.state.ProfileVideoListState
 import javax.inject.Inject
 
-@FlowPreview
-@ExperimentalCoroutinesApi
 @HiltViewModel
 class ProfileViewModel
 @Inject constructor(
@@ -37,10 +33,11 @@ class ProfileViewModel
 	init {
 		viewModelScope.launch {
 			mLikedRepository.getLikedVideos()
-				.onStart { mLikedVideosState.value = ProfileVideoListState.Loading }
 				.collect { result ->
 					mLikedVideosState.value = when {
-						result.isNotEmpty() -> ProfileVideoListState.Data(result.map { createProfileVideoItemState(it) })
+						result is VideosResult.Data && result.data.isNotEmpty() ->
+							ProfileVideoListState.Data(result.data.map { createProfileVideoItemState(it) })
+						result is VideosResult.Loading -> ProfileVideoListState.Loading
 						else -> ProfileVideoListState.Empty
 					}
 				}
@@ -48,10 +45,11 @@ class ProfileViewModel
 
 		viewModelScope.launch {
 			mUploadedRepository.getUploadedVideos()
-				.onStart { mUploadedVideosState.value = ProfileVideoListState.Loading }
 				.collect { result ->
 					mUploadedVideosState.value = when {
-						result.isNotEmpty() -> ProfileVideoListState.Data(result.map { createProfileVideoItemState(it) })
+						result is VideosResult.Data && result.data.isNotEmpty() ->
+							ProfileVideoListState.Data(result.data.map { createProfileVideoItemState(it) })
+						result is VideosResult.Loading -> ProfileVideoListState.Loading
 						else -> ProfileVideoListState.Empty
 					}
 				}

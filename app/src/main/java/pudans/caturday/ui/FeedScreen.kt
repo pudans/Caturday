@@ -1,11 +1,9 @@
 package pudans.caturday.ui
 
-import android.net.Uri
 import android.view.TextureView
 import android.view.ViewGroup
 import android.widget.FrameLayout
 import androidx.compose.animation.AnimatedVisibility
-import androidx.compose.animation.ExperimentalAnimationApi
 import androidx.compose.animation.fadeIn
 import androidx.compose.animation.fadeOut
 import androidx.compose.foundation.Image
@@ -52,33 +50,15 @@ import com.google.accompanist.pager.ExperimentalPagerApi
 import com.google.accompanist.pager.VerticalPager
 import com.google.accompanist.pager.rememberPagerState
 import com.google.android.exoplayer2.C
-import com.google.android.exoplayer2.DefaultLoadControl
-import com.google.android.exoplayer2.DefaultRenderersFactory
 import com.google.android.exoplayer2.MediaItem
 import com.google.android.exoplayer2.Player
 import com.google.android.exoplayer2.SimpleExoPlayer
 import com.google.android.exoplayer2.source.DefaultMediaSourceFactory
 import com.google.android.exoplayer2.source.MediaSourceFactory
-import com.google.android.exoplayer2.source.ProgressiveMediaSource
-import com.google.android.exoplayer2.trackselection.DefaultTrackSelector
-import com.google.android.exoplayer2.upstream.DataSource
-//import com.google.android.exoplayer2.upstream.DefaultHttpDataSourceFactory
-//import com.google.android.exoplayer2.upstream.cache.CacheDataSourceFactory
-import com.google.android.exoplayer2.upstream.cache.LeastRecentlyUsedCacheEvictor
-import com.google.android.exoplayer2.upstream.cache.SimpleCache
-import kotlinx.coroutines.ExperimentalCoroutinesApi
-import kotlinx.coroutines.FlowPreview
 import pudans.caturday.FeedViewModel
 import pudans.caturday.state.FeedItemState
 import pudans.caturday.state.FeedScreenState
-import java.io.File
-import com.google.android.exoplayer2.upstream.DefaultDataSourceFactory
-import pudans.caturday.CacheUtils
 
-
-@ExperimentalAnimationApi
-@FlowPreview
-@ExperimentalCoroutinesApi
 @ExperimentalPagerApi
 @Composable
 fun FeedScreen() {
@@ -103,7 +83,6 @@ fun FeedScreen() {
 	}
 }
 
-@ExperimentalAnimationApi
 @ExperimentalPagerApi
 @Composable
 private fun FeedPager(
@@ -118,7 +97,6 @@ private fun FeedPager(
 	) { page -> PagerItem(items[page], isSelected = page == pagerState.currentPage, onLikeClick) }
 }
 
-@ExperimentalAnimationApi
 @Composable
 private fun PagerItem(
 	itemState: FeedItemState,
@@ -286,7 +264,6 @@ private fun RightTopBlock(itemState: FeedItemState) {
 }
 
 
-@ExperimentalAnimationApi
 @Composable
 fun FeedVideoPlayer(
 	videoUrl: String,
@@ -390,7 +367,6 @@ private fun ProgressBar(progressState: Float) {
 	)
 }
 
-@ExperimentalAnimationApi
 @Composable
 private fun PreviewImage(
 	previewImageState: Boolean,
@@ -410,7 +386,6 @@ private fun PreviewImage(
 	}
 }
 
-@ExperimentalAnimationApi
 @Composable
 private fun PlayPauseIcon(playPauseState: Boolean) {
 	Box(

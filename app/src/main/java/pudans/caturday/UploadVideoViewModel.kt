@@ -1,6 +1,5 @@
 package pudans.caturday
 
-import android.graphics.Bitmap
 import android.net.Uri
 import androidx.compose.runtime.State
 import androidx.compose.runtime.mutableStateOf
@@ -9,8 +8,6 @@ import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import dagger.hilt.android.lifecycle.HiltViewModel
-import kotlinx.coroutines.ExperimentalCoroutinesApi
-import kotlinx.coroutines.FlowPreview
 import kotlinx.coroutines.flow.collect
 import kotlinx.coroutines.launch
 import pudans.caturday.repository.MLVisionRepository
@@ -20,9 +17,6 @@ import pudans.caturday.state.UploadVideoState
 import javax.inject.Inject
 import kotlin.math.min
 
-
-@ExperimentalCoroutinesApi
-@FlowPreview
 @HiltViewModel
 class UploadVideoViewModel
 @Inject constructor(
