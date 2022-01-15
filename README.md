@@ -1,10 +1,14 @@
 # Caturday
-Because every day is Caturday
+TikTok's clone with cats only
+Because every day is Caturday!
 
-![GitHub Cards Preview](https://github.com/pudans/TrafficConditionMap/blob/master/art/app_video.gif)
+![GitHub Cards Preview](https://github.com/pudans/Caturday/blob/master/arts/gif_1.gif)
+![GitHub Cards Preview](https://github.com/pudans/Caturday/blob/master/arts/gif_2.gif)
+![GitHub Cards Preview](https://github.com/pudans/Caturday/blob/master/arts/gif_3.gif)
 
-A map Application built to Demonstrate the use of Jetpack Compose for building declarative UI in
+An Application built to Demonstrate the use of Jetpack Compose for building declarative UI in
 Android.
+App uses onboard ML Kit library for recognition cats in video.
 
 ## Built With 🛠
 
