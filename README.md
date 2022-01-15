@@ -10,7 +10,11 @@ An Application built to Demonstrate the use of Jetpack Compose for building decl
 Android.
 App uses onboard ML Kit library for recognition cats in video.
 
+## Work in progress 🚧 
+The project is actually in development. You are welcome to participate.
+
 ## Built With 🛠
+One of the main goals of Caturday is too use all the latest libraries and tools available.
 
 - [Kotlin](https://kotlinlang.org/) - First class and official programming language for Android
   development.
@@ -21,6 +25,7 @@ App uses onboard ML Kit library for recognition cats in video.
   asynchronously.
 - [Android Architecture Components](https://developer.android.com/topic/libraries/architecture) -
   Collection of libraries that help you design robust, testable, and maintainable apps.
+  - [Dagger Hilt](https://developer.android.com/training/dependency-injection/hilt-android) - The DI framework w/ Jetpack integration.
   - [Stateflow](https://developer.android.com/kotlin/flow/stateflow-and-sharedflow) - StateFlow is a
     state-holder observable flow that emits the current and new state updates to its collectors.
   - [Flow](https://kotlinlang.org/docs/reference/coroutines/flow.html) - A flow is an asynchronous
@@ -35,6 +40,15 @@ App uses onboard ML Kit library for recognition cats in video.
 ## Architecture 🗼
 
 This app uses [***MVVM (Model View View-Model)***](https://developer.android.com/jetpack/docs/guide#recommended-app-arch) architecture.
+
+## Tests
+
+Coming soon..
+
+### Quality 🧪
+
+- [klint](https://github.com/shyiko/ktlint)
+- [detekt](https://github.com/arturbosch/detekt)
 
 ## MAD Score
 ![summary](https://github.com/pudans/TrafficConditionMap/blob/master/art/summary.png)
